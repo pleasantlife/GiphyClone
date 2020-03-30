@@ -10,7 +10,8 @@ interface GiphyAPIService {
 
     @GET("gifs/trending")
     fun getGifTrending(
-        @Query("api_key") apiKey: String
+        @Query("api_key") apiKey: String,
+        @Query("limit") limit: Int
     ) : Observable<ResultModel>
 
     @GET("stickers/trending")

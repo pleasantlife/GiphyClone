@@ -28,6 +28,7 @@ data class Data(
     @SerializedName("import_datetime")
     val importDateTime: String,
     @SerializedName("trending_datetime")
-    val trendingDateTime: String
+    val trendingDateTime: String,
+    val images: Images
 ) {
 }

@@ -16,9 +16,9 @@ class RetrofitUtil {
     }
 
     fun getRetrofitService(): GiphyAPIService {
-        val client = OkHttpClient.Builder().addNetworkInterceptor(HttpLoggingInterceptor(){
-            Log.e("log","${it}")
-        }).build()
+        val client = OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor{
+            Log.w("HttpLogging::","${it}")
+        }.setLevel(HttpLoggingInterceptor.Level.BODY)).build()
         return Retrofit.Builder().baseUrl(BASE_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
