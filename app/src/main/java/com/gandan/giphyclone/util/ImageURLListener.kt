@@ -1,8 +1,8 @@
 package com.gandan.giphyclone.util
 
-import com.gandan.giphyclone.data.model.Downsized
+import com.gandan.giphyclone.data.model.FixedDownsampled
 
 interface ImageURLListener {
 
-    fun getImageUrlList(urlList: ArrayList<Downsized>)
+    fun getImageUrlList(urlList: ArrayList<FixedDownsampled>)
 }

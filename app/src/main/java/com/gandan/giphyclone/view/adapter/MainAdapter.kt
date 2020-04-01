@@ -4,22 +4,23 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.target.Target
 import com.gandan.giphyclone.R
-import com.gandan.giphyclone.data.model.Downsized
+import com.gandan.giphyclone.data.model.FixedDownsampled
 import com.gandan.giphyclone.util.ItemClickListener
 import kotlinx.android.synthetic.main.recycler_item.view.*
 
-class MainAdapter(private var urlList: ArrayList<Downsized>,
+class MainAdapter(private var urlList: ArrayList<FixedDownsampled>,
                   private val requestManager: RequestManager,
                   private val itemClickListener: ItemClickListener)
     : RecyclerView.Adapter<MainAdapter.MainHolder>() {
 
 
-    fun addData(urlList: ArrayList<Downsized>){
+    fun addData(urlList: ArrayList<FixedDownsampled>){
         this.urlList = urlList
+        urlList.addAll(urlList)
         notifyItemRangeChanged(0, urlList.size)
     }
 
@@ -40,10 +41,17 @@ class MainAdapter(private var urlList: ArrayList<Downsized>,
 
     class MainHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(downsized: Downsized,
+        fun bind(fixedWidthDownsampled: FixedDownsampled,
                  requestManager: RequestManager,
                  itemClickListener: ItemClickListener,
                  position: Int){
+
+            val width = fixedWidthDownsampled.width.toInt() * 3
+            val height = fixedWidthDownsampled.height.toInt() * 3
+
+
+            itemView.imageItem.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
+
 
             var placeHolderImage = 0
 
@@ -54,9 +62,10 @@ class MainAdapter(private var urlList: ArrayList<Downsized>,
                 3 -> placeHolderImage = R.drawable.loading_green
             }
 
-            requestManager.load(downsized.url).override(downsized.width.toInt(), downsized.height.toInt()).placeholder(placeHolderImage).into(itemView.imageItem)
+
+            requestManager.load(fixedWidthDownsampled.url).override(width, height).into(itemView.imageItem)
             itemView.imageItem.setOnClickListener {
-                itemClickListener.setToast(downsized.url)
+                itemClickListener.setToast(fixedWidthDownsampled.url)
             }
         }
     }

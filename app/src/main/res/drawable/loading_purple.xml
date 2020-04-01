@@ -6,7 +6,7 @@
         android:color="@color/purple"/>
 
     <size
-        android:width="100dp"
+        android:width="1000dp"
         android:height="100dp"/>
 
 
