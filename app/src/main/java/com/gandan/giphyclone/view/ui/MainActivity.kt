@@ -3,6 +3,7 @@ package com.gandan.giphyclone.view.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
@@ -35,7 +36,8 @@ class MainActivity : AppCompatActivity(), ImageURLListener, ItemClickListener {
 
     override fun getImageUrlList(urlList : ArrayList<FixedDownsampled>) {
         val requestManager = Glide.with(this)
-        mainAdapter = MainAdapter(urlList, requestManager, this)
+        Log.e("density", resources.displayMetrics.density.roundToInt().toString())
+        mainAdapter = MainAdapter(urlList, requestManager, this, resources.displayMetrics.density.roundToInt())
         val gridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         recyclerView.apply {

@@ -14,7 +14,8 @@ import kotlinx.android.synthetic.main.recycler_item.view.*
 
 class MainAdapter(private var urlList: ArrayList<FixedDownsampled>,
                   private val requestManager: RequestManager,
-                  private val itemClickListener: ItemClickListener)
+                  private val itemClickListener: ItemClickListener,
+                  private val density: Int)
     : RecyclerView.Adapter<MainAdapter.MainHolder>() {
 
 
@@ -35,7 +36,7 @@ class MainAdapter(private var urlList: ArrayList<FixedDownsampled>,
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
 
-        holder.bind(urlList[position], requestManager, itemClickListener, position)
+        holder.bind(urlList[position], requestManager, itemClickListener, position, density)
         //notifyItemInserted(position)
     }
 
@@ -44,10 +45,11 @@ class MainAdapter(private var urlList: ArrayList<FixedDownsampled>,
         fun bind(fixedWidthDownsampled: FixedDownsampled,
                  requestManager: RequestManager,
                  itemClickListener: ItemClickListener,
-                 position: Int){
+                 position: Int,
+                 density: Int){
 
-            val width = fixedWidthDownsampled.width.toInt() * 3
-            val height = fixedWidthDownsampled.height.toInt() * 3
+            val width = (fixedWidthDownsampled.width.toInt() * density).toInt()
+            val height = (fixedWidthDownsampled.height.toInt() * density).toInt()
 
 
             itemView.imageItem.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
@@ -63,7 +65,7 @@ class MainAdapter(private var urlList: ArrayList<FixedDownsampled>,
             }
 
 
-            requestManager.load(fixedWidthDownsampled.url).override(width, height).into(itemView.imageItem)
+            requestManager.load(fixedWidthDownsampled.url).override(width, height).placeholder(placeHolderImage).into(itemView.imageItem)
             itemView.imageItem.setOnClickListener {
                 itemClickListener.setToast(fixedWidthDownsampled.url)
             }

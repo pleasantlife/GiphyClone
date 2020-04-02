@@ -14,7 +14,7 @@ class LoadRepository(private val compositeDisposable: CompositeDisposable,
     fun getGifData(){
         val urlList = ArrayList<FixedDownsampled>()
         compositeDisposable.add(
-            RetrofitUtil().getRetrofitService().getGifTrending(RetrofitUtil.API_KEY, 20)
+            RetrofitUtil().getRetrofitService().getGifTrending(RetrofitUtil.API_KEY, 500)
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     for(data in it.data){
