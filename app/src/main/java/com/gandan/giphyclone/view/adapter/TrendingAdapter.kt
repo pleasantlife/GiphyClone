@@ -1,22 +1,20 @@
 package com.gandan.giphyclone.view.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.request.target.Target
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.FixedDownsampled
 import com.gandan.giphyclone.util.ItemClickListener
 import kotlinx.android.synthetic.main.recycler_item.view.*
 
-class MainAdapter(private var urlList: ArrayList<FixedDownsampled>,
-                  private val requestManager: RequestManager,
-                  private val itemClickListener: ItemClickListener,
-                  private val density: Int)
-    : RecyclerView.Adapter<MainAdapter.MainHolder>() {
+class TrendingAdapter(private var urlList: ArrayList<FixedDownsampled>,
+                      private val requestManager: RequestManager,
+                      private val itemClickListener: ItemClickListener,
+                      private val density: Int)
+    : RecyclerView.Adapter<TrendingAdapter.MainHolder>() {
 
 
     fun addData(urlList: ArrayList<FixedDownsampled>){
