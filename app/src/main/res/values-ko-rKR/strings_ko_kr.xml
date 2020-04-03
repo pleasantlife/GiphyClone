@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search">검색</string>
+    <string name="trending">트랜드</string>
+    <string name="favorite">찜해둔 목록</string>
+    <string name="searchHint">모든 GIF들을 검색해 보세요!</string>
+</resources>

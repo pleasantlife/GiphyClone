@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.data.model
+package com.gandan.giphyclone.data.model.gifs
 
 import com.google.gson.annotations.SerializedName
 
@@ -9,6 +9,7 @@ data class FixedDownsampled(
     val webp: String,
     @SerializedName("webp_size")
     val webpSize: String,
-    val width: String
+    val width: String,
+    var id: String
 ){
 }

@@ -1,13 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ui.SearchFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.ui.SearchFragment"
+    android:background="#000000">
+
+    <ImageView
+        android:id="@+id/backBtnImg"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="8dp"
+        app:srcCompat="@drawable/ic_arrow_back_white_48dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search"
+        android:textSize="@dimen/titleSize"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backBtnImg"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/backBtnImg"/>
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/keywordEditText"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="2dp"
+        android:paddingStart="8dp"
+        android:background="@color/white"
+        android:textColor="@color/gray"
+        android:hint="Search all the GIFs"
+        android:textSize="16dp"
+        android:gravity="center_vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/backBtnImg"
+        app:layout_constraintRight_toLeftOf="@+id/searchBtn"/>
+
+    <ImageView
+        android:id="@+id/searchBtn"
+        android:layout_width="48dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="2dp"
+        android:padding="4dp"
+        app:srcCompat="@drawable/ic_search_white_48dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/keywordEditText"
+        app:layout_constraintBottom_toBottomOf="@+id/keywordEditText"
+        android:background="@drawable/search_gradient"
+        />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="#000000"
+        app:layout_constraintTop_toBottomOf="@+id/keywordEditText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/gifBtn"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_margin="2dp"
+                android:background="@color/green"
+                android:text="GIFs"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:gravity="center"
+                app:layout_constraintEnd_toStartOf="@+id/stickerBtn"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/stickerBtn"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_margin="2dp"
+                android:background="@color/gray"
+                android:text="Stickers"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/gifBtn"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/recentTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recent searches"
+                android:layout_margin="4dp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/gifBtn"/>
+
+            <HorizontalScrollView
+                android:id="@+id/recentScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recentTitle">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="8dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/recentChipOne"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="game of thrones"
+                        app:chipEndPadding="8dp"
+                        app:chipIcon="@drawable/ic_restore_white_48dp"
+                        app:chipStartPadding="8dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/recentChipTwo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="pengsoo"
+                        app:chipEndPadding="8dp"
+                        app:chipIcon="@drawable/ic_restore_white_48dp"
+                        app:chipStartPadding="8dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/recentChipThree"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="over the hedge"
+                        app:chipEndPadding="8dp"
+                        app:chipIcon="@drawable/ic_restore_white_48dp"
+                        app:chipStartPadding="8dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/recentChipFour"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="help"
+                        app:chipEndPadding="8dp"
+                        app:chipIcon="@drawable/ic_restore_white_48dp"
+                        app:chipStartPadding="8dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/recentChipFive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="16dp"
+                        android:text="question mark"
+                        app:chipEndPadding="8dp"
+                        app:chipIcon="@drawable/ic_restore_white_48dp"
+                        app:chipStartPadding="8dp" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/popularTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Popular searches"
+                android:textColor="@color/white"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recentScrollView"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/popularRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/popularTitle"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

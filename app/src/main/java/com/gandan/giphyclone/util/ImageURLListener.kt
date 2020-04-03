@@ -1,6 +1,6 @@
 package com.gandan.giphyclone.util
 
-import com.gandan.giphyclone.data.model.FixedDownsampled
+import com.gandan.giphyclone.data.model.gifs.FixedDownsampled
 
 interface ImageURLListener {
 

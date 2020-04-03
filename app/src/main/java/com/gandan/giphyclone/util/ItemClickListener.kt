@@ -2,5 +2,5 @@ package com.gandan.giphyclone.util
 
 interface ItemClickListener {
 
-    fun setToast(message: String);
+    fun movePage(type: String, id: String);
 }

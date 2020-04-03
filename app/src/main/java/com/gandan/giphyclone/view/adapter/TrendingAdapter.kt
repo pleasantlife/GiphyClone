@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.gandan.giphyclone.R
-import com.gandan.giphyclone.data.model.FixedDownsampled
+import com.gandan.giphyclone.data.model.gifs.FixedDownsampled
 import com.gandan.giphyclone.util.ItemClickListener
 import kotlinx.android.synthetic.main.recycler_item.view.*
 
@@ -46,8 +46,8 @@ class TrendingAdapter(private var urlList: ArrayList<FixedDownsampled>,
                  position: Int,
                  density: Int){
 
-            val width = (fixedWidthDownsampled.width.toInt() * density).toInt()
-            val height = (fixedWidthDownsampled.height.toInt() * density).toInt()
+            val width = (fixedWidthDownsampled.width.toInt() * density)
+            val height = (fixedWidthDownsampled.height.toInt() * density)
 
 
             itemView.imageItem.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
@@ -65,7 +65,7 @@ class TrendingAdapter(private var urlList: ArrayList<FixedDownsampled>,
 
             requestManager.load(fixedWidthDownsampled.url).override(width, height).placeholder(placeHolderImage).into(itemView.imageItem)
             itemView.imageItem.setOnClickListener {
-                itemClickListener.setToast(fixedWidthDownsampled.url)
+                itemClickListener.movePage("gif", fixedWidthDownsampled.id)
             }
         }
     }

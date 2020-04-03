@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.data.model
+package com.gandan.giphyclone.data.model.gifs
 
 data class Downsized(
     val height: String,

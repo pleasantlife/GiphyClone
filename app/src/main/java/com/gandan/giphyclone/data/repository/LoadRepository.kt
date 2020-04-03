@@ -1,28 +1,36 @@
 package com.gandan.giphyclone.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.gandan.giphyclone.data.model.FixedDownsampled
-import com.gandan.giphyclone.util.ImageURLListener
+import com.gandan.giphyclone.data.model.gifs.FixedDownsampled
 import com.gandan.giphyclone.util.RetrofitUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class LoadRepository() {
 
     fun getGifData() : MutableLiveData<List<FixedDownsampled>>{
         val urlList = MutableLiveData<List<FixedDownsampled>>()
-        val forList = ArrayList<FixedDownsampled>()
+        val tempList = ArrayList<FixedDownsampled>()
         val dataList = RetrofitUtil().getRetrofitService().getGifTrending(RetrofitUtil.API_KEY, 500)
             .subscribeOn(Schedulers.newThread()).blockingFirst()
 
         for(data in dataList.data){
-            forList.add(data.images.fixedWidthDownsampled)
+            val downSampledData = data.images.fixedWidthDownsampled
+            downSampledData.id = data.id
+            tempList.add(downSampledData)
         }
-        urlList.value = forList
+        urlList.value = tempList
 
         return urlList
+    }
+
+    fun getTrendKeyword() : MutableLiveData<List<String>> {
+        val keywordList = MutableLiveData<List<String>>()
+        val tempList = RetrofitUtil().getRetrofitService().getTrendKeywords(RetrofitUtil.API_KEY)
+            .subscribeOn(Schedulers.newThread()).blockingGet().data
+
+        keywordList.value = tempList
+        return keywordList
     }
 }
