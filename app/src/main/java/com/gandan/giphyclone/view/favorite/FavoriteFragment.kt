@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.ui
+package com.gandan.giphyclone.view.favorite
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -12,7 +12,8 @@ import com.gandan.giphyclone.R
 class FavoriteFragment : Fragment() {
 
     companion object {
-        fun newInstance() = FavoriteFragment()
+        fun newInstance() =
+            FavoriteFragment()
     }
 
     private lateinit var viewModel: FavoriteViewModel

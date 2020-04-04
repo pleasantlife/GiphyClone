@@ -6,7 +6,7 @@
     app:startDestination="@id/trendingFragment">
     <fragment
         android:id="@+id/trendingFragment"
-        android:name="com.gandan.giphyclone.view.ui.TrendingFragment"
+        android:name="com.gandan.giphyclone.view.trending.TrendingFragment"
         android:label="fragment_trending"
         tools:layout="@layout/fragment_trending" >
         <action
@@ -19,20 +19,21 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.gandan.giphyclone.view.ui.SearchFragment"
+        android:name="com.gandan.giphyclone.view.search.SearchFragment"
         android:label="search_fragment"
         tools:layout="@layout/search_fragment" >
-        <action
-            android:id="@+id/action_searchFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
         <action
             android:id="@+id/action_searchFragment_to_trendingFragment"
             app:destination="@id/trendingFragment"
             app:launchSingleTop="true" />
+        <action
+            android:id="@+id/action_searchFragment_to_searchResultFragment"
+            app:destination="@id/searchResultFragment"
+            app:launchSingleTop="true" />
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.gandan.giphyclone.view.ui.FavoriteFragment"
+        android:name="com.gandan.giphyclone.view.favorite.FavoriteFragment"
         android:label="favorite_fragment"
         tools:layout="@layout/favorite_fragment" >
         <action
@@ -45,4 +46,13 @@
         android:name="com.gandan.giphyclone.view.ui.DetailFragment"
         android:label="detail_fragment"
         tools:layout="@layout/detail_fragment" />
+    <fragment
+        android:id="@+id/searchResultFragment"
+        android:name="com.gandan.giphyclone.view.searchresult.SearchResultFragment"
+        android:label="search_result_fragment"
+        tools:layout="@layout/search_result_fragment" >
+        <action
+            android:id="@+id/action_searchResultFragment_self"
+            app:destination="@id/searchResultFragment" />
+    </fragment>
 </navigation>

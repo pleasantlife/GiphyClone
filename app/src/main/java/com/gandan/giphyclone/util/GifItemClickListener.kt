@@ -1,6 +1,6 @@
 package com.gandan.giphyclone.util
 
-interface ItemClickListener {
+interface GifItemClickListener {
 
     fun movePage(type: String, id: String);
 }

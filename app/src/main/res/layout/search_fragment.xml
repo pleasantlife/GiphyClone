@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.ui.SearchFragment"
-    android:background="#000000">
+    tools:context=".view.search.SearchFragment"
+    android:background="#000000"
+    android:focusable="true"
+    android:focusableInTouchMode="true" >
 
     <ImageView
         android:id="@+id/backBtnImg"
@@ -35,10 +37,12 @@
         android:layout_marginStart="2dp"
         android:paddingStart="8dp"
         android:background="@color/white"
-        android:textColor="@color/gray"
+        android:textColor="@color/black"
         android:hint="Search all the GIFs"
+        android:textColorHint="@color/gray"
         android:textSize="16dp"
         android:gravity="center_vertical"
+        android:imeOptions="actionSearch"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backBtnImg"
         app:layout_constraintRight_toLeftOf="@+id/searchBtn"/>

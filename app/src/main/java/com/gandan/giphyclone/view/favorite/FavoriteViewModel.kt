@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.ui
+package com.gandan.giphyclone.view.favorite
 
 import androidx.lifecycle.ViewModel
 

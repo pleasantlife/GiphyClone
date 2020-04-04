@@ -4,7 +4,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="search">Search</string>
-    <string name="trending">Trending</string>
+    <string name="trending">Trending GIFs</string>
     <string name="favorite">Favorites</string>
     <string name="searchHint">Search all the GIFs</string>
     <string name="hashtag" translatable="false">#%s</string>

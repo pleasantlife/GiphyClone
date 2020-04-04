@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#000000"
-    tools:context=".view.ui.TrendingFragment">
+    tools:context=".view.trending.TrendingFragment">
 
     <ImageView
         android:id="@+id/logoTrending"
@@ -74,7 +74,8 @@
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider">
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerTrending"
