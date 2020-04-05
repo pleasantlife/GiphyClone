@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.gandan.giphyclone.view.ui.DetailFragment"
+        android:name="com.gandan.giphyclone.view.detail.DetailFragment"
         android:label="detail_fragment"
         tools:layout="@layout/detail_fragment" />
     <fragment
@@ -54,5 +54,8 @@
         <action
             android:id="@+id/action_searchResultFragment_self"
             app:destination="@id/searchResultFragment" />
+        <action
+            android:id="@+id/action_searchResultFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
 </navigation>

@@ -6,16 +6,17 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.RequestManager
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.util.GifItemClickListener
 import kotlinx.android.synthetic.main.recycler_item.view.*
 
-class TrendingAdapter(private val requestManager: RequestManager,
-                      private val gifItemClickListener: GifItemClickListener,
-                      private val density: Int)
-    : PagedListAdapter<Data, TrendingAdapter.MainHolder>(DIFF_CALLBACK) {
+class ResultDataAdapter(private val requestManager: RequestManager,
+                        private val gifItemClickListener: GifItemClickListener,
+                        private val density: Int)
+    : PagedListAdapter<Data, ResultDataAdapter.MainHolder>(DIFF_CALLBACK) {
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Data>() {
@@ -26,9 +27,15 @@ class TrendingAdapter(private val requestManager: RequestManager,
             override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
                 return oldItem.equals(newItem)
             }
-
         }
     }
+
+    override fun getItemViewType(position: Int): Int {
+        return super.getItemViewType(position)
+
+    }
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_item, parent, false)
@@ -39,8 +46,7 @@ class TrendingAdapter(private val requestManager: RequestManager,
 
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
-
-        if(getItem(position) != null) {
+        if (getItem(position) != null) {
             holder.bind(
                 getItem(position)!!,
                 requestManager,
@@ -76,6 +82,12 @@ class TrendingAdapter(private val requestManager: RequestManager,
                 3 -> placeHolderImage = R.drawable.loading_green
             }
 
+
+//            if(position == 0){
+//                val layoutParams = StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                layoutParams.isFullSpan = true
+//                itemView.layoutParams = layoutParams
+//            }
 
             requestManager.load(url).override(width, height).placeholder(placeHolderImage).into(itemView.imageItem)
             itemView.imageItem.setOnClickListener {

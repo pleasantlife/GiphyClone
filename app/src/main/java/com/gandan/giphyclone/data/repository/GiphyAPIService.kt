@@ -1,10 +1,9 @@
 package com.gandan.giphyclone.data.repository
 
-import com.gandan.giphyclone.data.ResultTrendingWordsModel
+import com.gandan.giphyclone.data.model.ResultTrendingWordsModel
 import com.gandan.giphyclone.data.model.gifs.ResultDetailModel
 import com.gandan.giphyclone.data.model.gifs.ResultModel
 import com.gandan.giphyclone.data.model.suggestion.AutoCompleteData
-import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -31,9 +30,10 @@ interface GiphyAPIService {
     @GET("{types}/search")
     fun getSearchResult(
         @Path("types") types: String,
+        @Query("api_key") apiKey: String,
         @Query("q") queryWord: String,
-        @Query("offset") offset: Int,
-        @Query("api_key") apiKey: String
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
     ) : Single<ResultModel>
 
     @GET("gifs/{id}")

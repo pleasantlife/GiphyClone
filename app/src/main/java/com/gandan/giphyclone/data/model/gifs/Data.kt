@@ -1,7 +1,9 @@
 package com.gandan.giphyclone.data.model.gifs
 
+import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 
+@Entity()
 data class Data(
     val type: String,
     val id: String,

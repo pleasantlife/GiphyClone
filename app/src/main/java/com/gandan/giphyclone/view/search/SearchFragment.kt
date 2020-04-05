@@ -58,8 +58,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
 
     private fun bindUI(){
         searchingView.backBtnImg.setOnClickListener {
-            Navigation.findNavController(searchingView)
-                .navigate(R.id.action_searchFragment_to_trendingFragment)
+            Navigation.findNavController(searchingView).navigateUp()
         }
         searchingView.keywordEditText.doAfterTextChanged { it ->
             if(it!!.length > 2){
@@ -76,6 +75,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
         }
         searchingView.searchBtn.setOnClickListener {
             if(searchingView.keywordEditText.text.isNotEmpty()) {
+
                 getKeyword(searchingView.keywordEditText.text.toString())
             }
         }

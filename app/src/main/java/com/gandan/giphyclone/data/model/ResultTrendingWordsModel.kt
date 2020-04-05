@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.data
+package com.gandan.giphyclone.data.model
 
 import com.gandan.giphyclone.data.model.gifs.Meta
 
