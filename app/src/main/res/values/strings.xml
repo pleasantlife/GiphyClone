@@ -8,4 +8,6 @@
     <string name="favorite">Favorites</string>
     <string name="searchHint">Search all the GIFs</string>
     <string name="hashtag" translatable="false">#%s</string>
+    <string name="gifs" translatable="false">GIFs</string>
+    <string name="stickers" translatable="false">Stickers</string>
 </resources>

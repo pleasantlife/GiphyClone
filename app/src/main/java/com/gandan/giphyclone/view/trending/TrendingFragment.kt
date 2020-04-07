@@ -77,7 +77,7 @@ class TrendingFragment : Fragment(), GifItemClickListener {
     override fun movePage(type: String, id: String) {
         //startActivity(Intent(context, DetailActivity::class.java).putExtra("id", id).putExtra("type", type))
         //DetailFragment().show(parentFragmentManager, "dialog")
-        val bundle = bundleOf("gifId" to id)
+        val bundle = bundleOf("gifId" to id, "list" to resultDataAdapter.currentList?.toList())
         Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_detailFragment, bundle)
     }
 

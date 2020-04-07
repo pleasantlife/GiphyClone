@@ -91,7 +91,7 @@ class ResultDataAdapter(private val requestManager: RequestManager,
 
             requestManager.load(url).override(width, height).placeholder(placeHolderImage).into(itemView.imageItem)
             itemView.imageItem.setOnClickListener {
-                gifItemClickListener.movePage("gif", data.id)
+                gifItemClickListener.movePage("gifId", data.id)
             }
         }
     }

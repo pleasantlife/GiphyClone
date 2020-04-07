@@ -2,6 +2,7 @@ package com.gandan.giphyclone.data.model.gifs
 
 import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 @Entity()
 data class Data(
@@ -32,5 +33,5 @@ data class Data(
     @SerializedName("trending_datetime")
     val trendingDateTime: String,
     val images: Images
-) {
+) : Serializable{
 }

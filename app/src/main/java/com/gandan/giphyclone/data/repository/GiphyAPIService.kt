@@ -54,4 +54,12 @@ interface GiphyAPIService {
         @Query("q") tags: String,
         @Query("api_key") apiKey: String
     ) : Single<AutoCompleteData>
+
+    @GET("gifs")
+    fun getRelatedGifData(
+        @Query("ids") id: String,
+        @Query("api_key") apiKey: String,
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
+    ) : Single<ResultModel>
 }

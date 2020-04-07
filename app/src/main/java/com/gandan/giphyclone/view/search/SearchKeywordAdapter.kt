@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.util.KeywordClickListener
+import com.gandan.giphyclone.view.search.SearchFragment.Companion.TRENDING_KEYWORD
 import kotlinx.android.synthetic.main.recycler_search_item.view.*
 
 class SearchKeywordAdapter(private var keyWordList: ArrayList<String>,
@@ -36,7 +37,7 @@ class SearchKeywordAdapter(private var keyWordList: ArrayList<String>,
     class PopularHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(keyword: String, type: String, keywordClickListener: KeywordClickListener){
-            if(type == "trendingKeyword"){
+            if(type == TRENDING_KEYWORD){
                 itemView.searchText.text = "#"+keyword
                 itemView.searchItemImage.setImageResource(R.drawable.ic_trending_up_white_48dp)
                 itemView.searchItemImage.setColorFilter(Color.parseColor("#00bcd4"))
