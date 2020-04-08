@@ -1,6 +1,7 @@
 package com.gandan.giphyclone.view.search
 
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.content.Context.MODE_PRIVATE
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.util.KeywordClickListener
+import com.gandan.giphyclone.view.SearchKeywordAdapter
 import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.android.synthetic.main.search_fragment.view.backBtnImg
 import kotlinx.android.synthetic.main.search_fragment.view.gifBtn
@@ -27,14 +29,11 @@ import kotlinx.android.synthetic.main.search_fragment.view.recentScrollView
 import kotlinx.android.synthetic.main.search_fragment.view.recentTitle
 import kotlinx.android.synthetic.main.search_fragment.view.searchBtn
 import kotlinx.android.synthetic.main.search_fragment.view.stickerBtn
-import kotlinx.android.synthetic.main.search_result_fragment.view.*
 
 class SearchFragment : Fragment(), KeywordClickListener {
 
     companion object {
         fun newInstance() = SearchFragment()
-        private val PRIVATE_MODE = 0
-        private val PREF_NAME = "giphyclone"
         val TRENDING_KEYWORD = "trendingkeyword"
         val SEARCHING_KEYWORD = "searchingkeyword"
     }
@@ -54,7 +53,8 @@ class SearchFragment : Fragment(), KeywordClickListener {
     ): View? {
         keyword = arguments?.getString("keyword", "")
         searchingView = inflater.inflate(R.layout.search_fragment, container, false)
-        searchKeywordAdapter = SearchKeywordAdapter(keywordList, this)
+        searchKeywordAdapter =
+            SearchKeywordAdapter(keywordList, this)
         bindUI()
         searchingView.gifBtn.setOnClickListener {
             clickGifBtn()
@@ -71,7 +71,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
         viewModel.getKeywords().observe(viewLifecycleOwner, Observer {
             setRecyclerData(ArrayList(it), TRENDING_KEYWORD)
         })
-        viewModel.getRecentKeywords(context!!.getSharedPreferences(PREF_NAME, PRIVATE_MODE))
+        viewModel.getRecentKeywords(context!!.getSharedPreferences("giphyclone", MODE_PRIVATE))
             .observe(viewLifecycleOwner, Observer{
                 setRecentKeywordUI(ArrayList(it))
             })
@@ -80,6 +80,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
     }
 
     private fun bindUI(){
+        searchingView.clearBtn.setColorFilter(Color.RED)
         searchingView.backBtnImg.setOnClickListener {
             Navigation.findNavController(searchingView).navigateUp()
         }
@@ -87,11 +88,21 @@ class SearchFragment : Fragment(), KeywordClickListener {
             searchingView.keywordEditText.setText(keyword)
         }
         searchingView.keywordEditText.doAfterTextChanged { it ->
-            if(it!!.length > 2){
-                changeKeywordSuggest(it.toString(), SEARCHING_KEYWORD)
-            } else {
-                changeKeywordSuggest(it.toString(), TRENDING_KEYWORD)
+            if (it != null) {
+                if(it.isNotEmpty()){
+                    searchingView.clearBtn.visibility = View.VISIBLE
+                } else {
+                    searchingView.clearBtn.visibility = View.GONE
+                }
+                if(it.length > 2){
+                    changeKeywordSuggest(it.toString(), SEARCHING_KEYWORD)
+                } else {
+                    changeKeywordSuggest(it.toString(), TRENDING_KEYWORD)
+                }
             }
+        }
+        searchingView.clearBtn.setOnClickListener {
+            searchingView.keywordEditText.text.clear()
         }
         searchingView.searchBtn.setOnClickListener {
             if(searchingView.keywordEditText.text.isNotEmpty()) {

@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.data.repository
+package com.gandan.giphyclone.data.source
 
 import androidx.paging.DataSource
 import com.gandan.giphyclone.data.model.gifs.Data
@@ -8,8 +8,8 @@ class TrendingDataSourceFactory(private val type: String): DataSource.Factory<In
     lateinit var trendingDataSource : DataSource<Int, Data>
 
     override fun create(): DataSource<Int, Data> {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        trendingDataSource = TrendingDataSource(type)
+        trendingDataSource =
+            TrendingDataSource(type)
         return trendingDataSource
     }
 }

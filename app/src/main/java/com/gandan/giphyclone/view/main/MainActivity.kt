@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.ui
+package com.gandan.giphyclone.view.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

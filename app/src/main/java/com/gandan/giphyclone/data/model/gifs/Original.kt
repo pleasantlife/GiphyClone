@@ -1,7 +1,10 @@
 package com.gandan.giphyclone.data.model.gifs
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Original(
     val frames: String,
     val hash: String,
@@ -15,5 +18,5 @@ data class Original(
     val webp: String,
     @SerializedName("webp_size")
     val webpSize: String
-) {
+): Parcelable {
 }

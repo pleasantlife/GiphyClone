@@ -1,7 +1,10 @@
 package com.gandan.giphyclone.data.model.gifs
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class FixedDownsampled(
     val height: String,
     val size: String,
@@ -11,5 +14,5 @@ data class FixedDownsampled(
     val webpSize: String,
     val width: String,
     var id: String
-){
+): Parcelable{
 }

@@ -3,7 +3,6 @@ package com.gandan.giphyclone.view.searchresult
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +17,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 
 import com.gandan.giphyclone.R
+import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.util.GifItemClickListener
-import com.gandan.giphyclone.view.trending.ResultDataAdapter
+import com.gandan.giphyclone.view.ResultDataAdapter
 import kotlinx.android.synthetic.main.search_result_fragment.view.*
 
 class SearchResultFragment : Fragment(), GifItemClickListener {
@@ -50,23 +50,21 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         val requestManager = Glide.with(this)
         val density = resources.displayMetrics.density.toInt()
-        resultDataAdapter = ResultDataAdapter(requestManager, this, density)
+        resultDataAdapter = ResultDataAdapter(
+            requestManager,
+            this,
+            density
+        )
 
         searchResultView.resultRecycler.apply {
             adapter = resultDataAdapter
             layoutManager = staggeredGridLayoutManager
         }
         searchResultView.searchResultTitle.text = keyword
-        searchResultView.keywordEditText.setText(keyword)
+        searchResultView.keywordText.text = keyword
         searchResultView.backBtnImg.setOnClickListener {
             Navigation.findNavController(searchResultView).navigateUp()
         }
-        searchResultView.keywordEditText.onFocusChangeListener =
-            View.OnFocusChangeListener { v, hasFocus ->
-                if(!hasFocus){
-                    inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
-                }
-            }
 
         when(type)
         {
@@ -80,13 +78,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
             clickStickerBtn()
         }
         searchResultView.searchBtn.setOnClickListener {
-            val newKeyword = searchResultView.keywordEditText.text.toString()
             val bundle = bundleOf("keyword" to keyword)
-//            if(newKeyword != keyword && newKeyword.isNotEmpty()) {
-//                val bundle = bundleOf("keyword" to newKeyword)
-//                Navigation.findNavController(searchResultView)
-//                    .navigate(R.id.action_searchResultFragment_self, bundle)
-//            }
             Navigation.findNavController(searchResultView).navigate(R.id.action_searchResultFragment_to_searchFragment, bundle)
         }
 
@@ -134,8 +126,25 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
-    override fun movePage(type: String, id: String) {
-        val bundle = bundleOf("gifId" to id, "list" to resultDataAdapter.currentList?.toList())
+    override fun movePage(type: String, id: String, position: Int) {
+        var startPoint = 0
+        val endPoint: Int
+        var newPosition = position
+        if(position - 30 > 0){
+            startPoint = position - 30
+            newPosition = 30
+        }
+        if(position + 30 > resultDataAdapter.currentList?.toList()!!.size){
+            endPoint = resultDataAdapter.currentList?.toList()!!.size-1
+        } else {
+            endPoint = position+30
+        }
+
+        val gifList = ArrayList<Data>()
+        for(i in startPoint..endPoint){
+            gifList.add(resultDataAdapter.currentList!![i]!!)
+        }
+        val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition)
         Navigation.findNavController(searchResultView).navigate(R.id.action_searchResultFragment_to_detailFragment, bundle)
     }
 

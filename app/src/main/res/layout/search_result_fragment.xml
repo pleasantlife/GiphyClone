@@ -15,6 +15,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:padding="8dp"
+        android:contentDescription="@string/backButtonDescription"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow_back_white_48dp" />
@@ -32,15 +33,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/backBtnImg" />
 
-    <EditText
-        android:id="@+id/keywordEditText"
+    <TextView
+        android:id="@+id/keywordText"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginStart="2dp"
         android:background="@color/white"
         android:gravity="center_vertical"
-        android:hint="Search all the GIFs"
-        android:imeOptions="actionSearch"
+        android:hint="@string/searchHint"
         android:paddingStart="8dp"
         android:textColor="@color/black"
         android:textColorHint="@color/gray"
@@ -56,9 +56,9 @@
         android:layout_marginEnd="2dp"
         android:background="@drawable/search_gradient"
         android:padding="4dp"
-        app:layout_constraintBottom_toBottomOf="@+id/keywordEditText"
+        app:layout_constraintBottom_toBottomOf="@+id/keywordText"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/keywordEditText"
+        app:layout_constraintTop_toTopOf="@+id/keywordText"
         app:srcCompat="@drawable/ic_search_white_48dp" />
 
     <View
@@ -68,7 +68,7 @@
         android:background="#000000"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keywordEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/keywordText" />
 
 
 
@@ -135,7 +135,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="4dp"
-                        android:text="Recent searches"
+                        android:text="@string/recentSearch"
                         android:textColor="@color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

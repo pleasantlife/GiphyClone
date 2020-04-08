@@ -5,7 +5,7 @@ import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.util.RetrofitUtil.Companion.API_KEY
 import io.reactivex.schedulers.Schedulers
 
-class KeywordAPIRepository() {
+class KeywordAPIRepository {
 
     private val getAPIService = RetrofitUtil().getRetrofitService()
 

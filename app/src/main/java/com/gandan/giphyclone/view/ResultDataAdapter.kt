@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.trending
+package com.gandan.giphyclone.view
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.RequestManager
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
@@ -16,7 +15,9 @@ import kotlinx.android.synthetic.main.recycler_item.view.*
 class ResultDataAdapter(private val requestManager: RequestManager,
                         private val gifItemClickListener: GifItemClickListener,
                         private val density: Int)
-    : PagedListAdapter<Data, ResultDataAdapter.MainHolder>(DIFF_CALLBACK) {
+    : PagedListAdapter<Data, ResultDataAdapter.MainHolder>(
+    DIFF_CALLBACK
+) {
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Data>() {
@@ -25,14 +26,13 @@ class ResultDataAdapter(private val requestManager: RequestManager,
             }
 
             override fun areContentsTheSame(oldItem: Data, newItem: Data): Boolean {
-                return oldItem.equals(newItem)
+                return oldItem == newItem
             }
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return super.getItemViewType(position)
-
     }
 
 
@@ -72,7 +72,6 @@ class ResultDataAdapter(private val requestManager: RequestManager,
 
             itemView.imageItem.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
 
-
             var placeHolderImage = 0
 
             when(position%4) {
@@ -82,16 +81,9 @@ class ResultDataAdapter(private val requestManager: RequestManager,
                 3 -> placeHolderImage = R.drawable.loading_green
             }
 
-
-//            if(position == 0){
-//                val layoutParams = StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-//                layoutParams.isFullSpan = true
-//                itemView.layoutParams = layoutParams
-//            }
-
             requestManager.load(url).override(width, height).placeholder(placeHolderImage).into(itemView.imageItem)
             itemView.imageItem.setOnClickListener {
-                gifItemClickListener.movePage("gifId", data.id)
+                gifItemClickListener.movePage("gifId", data.id, position)
             }
         }
     }

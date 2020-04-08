@@ -9,12 +9,13 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 
 import com.gandan.giphyclone.R
+import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.view.ResultDataAdapter
 import kotlinx.android.synthetic.main.fragment_trending.view.*
 import kotlin.math.roundToInt
 
@@ -74,10 +75,24 @@ class TrendingFragment : Fragment(), GifItemClickListener {
         })
     }
 
-    override fun movePage(type: String, id: String) {
-        //startActivity(Intent(context, DetailActivity::class.java).putExtra("id", id).putExtra("type", type))
-        //DetailFragment().show(parentFragmentManager, "dialog")
-        val bundle = bundleOf("gifId" to id, "list" to resultDataAdapter.currentList?.toList())
+    override fun movePage(type: String, id: String, position: Int) {
+        var startPoint = 0
+        var newPosition = position
+        if(position - 30 > 0){
+            startPoint = position - 30
+            newPosition = 30
+        }
+        val endPoint = if(position + 30 > resultDataAdapter.currentList?.toList()!!.size){
+            resultDataAdapter.currentList?.toList()!!.size-1
+        } else {
+            position+30
+        }
+
+        val gifList = ArrayList<Data>()
+        for(i in startPoint..endPoint){
+            gifList.add(resultDataAdapter.currentList!![i]!!)
+        }
+        val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition)
         Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_detailFragment, bundle)
     }
 

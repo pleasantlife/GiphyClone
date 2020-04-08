@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.search
+package com.gandan.giphyclone.view
 
 import android.graphics.Color
 import android.view.LayoutInflater

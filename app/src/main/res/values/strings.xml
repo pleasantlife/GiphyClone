@@ -10,4 +10,9 @@
     <string name="hashtag" translatable="false">#%s</string>
     <string name="gifs" translatable="false">GIFs</string>
     <string name="stickers" translatable="false">Stickers</string>
+    <string name="source" translatable="false">Source</string>
+    <string name="unknown" translatable="false">Unknown</string>
+    <string name="recentSearch">Recent searches</string>
+    <string name="popularSearch">Popular searches</string>
+    <string name="backButtonDescription">Back button</string>
 </resources>

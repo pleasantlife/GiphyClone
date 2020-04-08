@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.data.repository
+package com.gandan.giphyclone.data.source
 
 import androidx.paging.PositionalDataSource
 import com.gandan.giphyclone.data.model.gifs.Data
@@ -14,7 +14,10 @@ class TrendingDataSource(private val type: String) : PositionalDataSource<Data>(
 
     private fun loadTotalCount(): Int {
         return RetrofitUtil().getRetrofitService()
-            .getTrending(type, API_KEY, ITEM_PER_PAGE, OFFSET).blockingGet()
+            .getTrending(type, API_KEY,
+                ITEM_PER_PAGE,
+                OFFSET
+            ).blockingGet()
             .pagination.totalCount
 
     }
@@ -26,7 +29,8 @@ class TrendingDataSource(private val type: String) : PositionalDataSource<Data>(
     private fun loadRangeInternal(startPosition: Int): List<Data> {
 
         return RetrofitUtil().getRetrofitService()
-            .getTrending(type, API_KEY, ITEM_PER_PAGE, startPosition).blockingGet().data
+            .getTrending(type, API_KEY,
+                ITEM_PER_PAGE, startPosition).blockingGet().data
 
     }
 

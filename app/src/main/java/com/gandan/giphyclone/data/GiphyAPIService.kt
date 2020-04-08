@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.data.repository
+package com.gandan.giphyclone.data
 
 import com.gandan.giphyclone.data.model.ResultTrendingWordsModel
 import com.gandan.giphyclone.data.model.gifs.ResultDetailModel
@@ -56,7 +56,7 @@ interface GiphyAPIService {
     ) : Single<AutoCompleteData>
 
     @GET("gifs")
-    fun getRelatedGifData(
+    fun getFavoriteGifData(
         @Query("ids") id: String,
         @Query("api_key") apiKey: String,
         @Query("limit") limit: Int,
