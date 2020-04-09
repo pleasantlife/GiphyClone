@@ -1,44 +1,46 @@
 package com.gandan.giphyclone.data.source
 
+import android.util.Log
 import androidx.paging.PositionalDataSource
+import com.gandan.giphyclone.data.GiphyAPIService
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.util.RetrofitUtil.Companion.API_KEY
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
-class TrendingDataSource(private val type: String) : PositionalDataSource<Data>() {
+class TrendingDataSource(private val compositeDisposable: CompositeDisposable,
+                         private val apiService: GiphyAPIService,
+                         private val type: String) : PositionalDataSource<Data>() {
 
     companion object {
         const val ITEM_PER_PAGE = 50
         const val OFFSET = 0
     }
 
-    private fun loadTotalCount(): Int {
-        return RetrofitUtil().getRetrofitService()
-            .getTrending(type, API_KEY,
-                ITEM_PER_PAGE,
-                OFFSET
-            ).blockingGet()
-            .pagination.totalCount
-
-    }
-
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Data>) {
-        callback.onResult(loadRangeInternal(params.startPosition))
-    }
-
-    private fun loadRangeInternal(startPosition: Int): List<Data> {
-
-        return RetrofitUtil().getRetrofitService()
-            .getTrending(type, API_KEY,
-                ITEM_PER_PAGE, startPosition).blockingGet().data
-
+        compositeDisposable.add(
+            apiService.getTrending(type, API_KEY, ITEM_PER_PAGE, params.startPosition).subscribeOn(Schedulers.io())
+                .subscribe({
+                    callback.onResult(it.data)
+                },{
+                    Log.e("Error", it.message)
+                })
+        )
     }
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Data>) {
 
-        val totalCount = loadTotalCount()
-        val position = computeInitialLoadPosition(params, totalCount)
-        callback.onResult(loadRangeInternal(position), position, totalCount)
+        compositeDisposable.add(
+            apiService.getTrending(type, API_KEY, ITEM_PER_PAGE, OFFSET).subscribeOn(Schedulers.io())
+                .subscribe({
+                    val totalCount = it.pagination.totalCount
+                    val position = computeInitialLoadPosition(params, totalCount)
+                    callback.onResult(it.data, position, totalCount)
+                },{
+                    Log.e("Error", it.message)
+                })
+        )
 
     }
 }

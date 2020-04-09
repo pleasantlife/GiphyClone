@@ -28,6 +28,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/logoFavorites"/>
 
     <ImageView
+        android:id="@+id/searchBtn"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:padding="8dp"

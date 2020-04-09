@@ -93,14 +93,4 @@ dependencies {
     // implementation 'androidx.paging:paging-rxjava2:2.1.2' // For Kotlin use paging-rxjava2-ktx
     implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
-
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
-    // For Kotlin use kapt instead of annotationProcessor
-
-    // optional - RxJava support for Room
-    implementation "androidx.room:room-rxjava2:$room_version"
-
-    // Test helpers
-    testImplementation "androidx.room:room-testing:$room_version"
 }

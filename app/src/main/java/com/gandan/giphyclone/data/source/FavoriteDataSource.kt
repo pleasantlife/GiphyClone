@@ -17,7 +17,7 @@ class FavoriteDataSource(private val compositeDisposable: CompositeDisposable,
     override fun loadRange(params: LoadRangeParams, callback: LoadRangeCallback<Data>) {
         compositeDisposable.add(
             apiService.getFavoriteGifData(
-                idList.joinToString(","), API_KEY, ITEM_PER_PAGE, params.startPosition)
+                idList.joinToString(), API_KEY, ITEM_PER_PAGE, params.startPosition)
                 .subscribeOn(Schedulers.io()).subscribe({
                     callback.onResult(it.data)
                 },{
@@ -28,7 +28,7 @@ class FavoriteDataSource(private val compositeDisposable: CompositeDisposable,
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<Data>) {
         compositeDisposable.add(
-        apiService.getFavoriteGifData(idList.joinToString(","), API_KEY, ITEM_PER_PAGE, OFFSET)
+        apiService.getFavoriteGifData(idList.joinToString(), API_KEY, ITEM_PER_PAGE, OFFSET)
             .subscribeOn(Schedulers.io()).subscribe({
                 val totalCount = it.pagination.totalCount
                 val position = computeInitialLoadPosition(params, totalCount)

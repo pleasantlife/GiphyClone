@@ -4,10 +4,12 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -17,7 +19,9 @@ import com.bumptech.glide.Glide
 
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
+import com.gandan.giphyclone.data.repository.TrendingDataRepository
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.view.ResultDataAdapter
 import kotlinx.android.synthetic.main.detail_fragment.view.*
 
@@ -30,28 +34,39 @@ class DetailFragment : Fragment(), GifItemClickListener {
     private lateinit var viewModel: DetailViewModel
     private lateinit var relatedAdapter: ResultDataAdapter
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var trendingDataRepository: TrendingDataRepository
+    private lateinit var detailView: View
     private var favoriteIdList = ArrayList<String>()
     private var gifId = ""
+    private var currentId = ""
+    private val apiService = RetrofitUtil().getRetrofitService()
+
+    fun loadIdToList() {
+        val favoriteIdStr = sharedPreferences.getString("favoriteIdList", "")!!
+        if(favoriteIdStr.isNotEmpty()){
+            favoriteIdList = ArrayList(favoriteIdStr.trim().splitToSequence(' ')
+                .filter { it.isNotEmpty() } // or: .filter { it.isNotBlank() }
+                .toList())
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val detailView = inflater.inflate(R.layout.detail_fragment, container, false)
+        detailView = inflater.inflate(R.layout.detail_fragment, container, false)
         sharedPreferences = context?.getSharedPreferences("giphyclone", MODE_PRIVATE)!!
-        val favoriteIdStr = sharedPreferences.getString("favoriteIdList", " ")!!
-        if(favoriteIdStr.isNotEmpty()){
-            favoriteIdList = ArrayList(favoriteIdStr.trim().splitToSequence(',').filter { it.isNotEmpty() }.toList())
-        }
+        loadIdToList()
         gifId = arguments?.getString("gifId", "")!!
         val list = arguments?.get("list") as ArrayList<Data>
         val startPosition = arguments?.get("startPosition") as Int
         val requestManager= Glide.with(this)
+        trendingDataRepository = TrendingDataRepository(apiService, "gifs")
         detailView.searchBtn.setOnClickListener {
             Navigation.findNavController(detailView).navigate(R.id.action_detailFragment_to_searchFragment)
         }
 
-        checkFavorite(gifId, favoriteIdStr, detailView)
+        checkFavorite(gifId, detailView)
 
 
         detailView.detailViewPager.apply {
@@ -73,6 +88,7 @@ class DetailFragment : Fragment(), GifItemClickListener {
 
             override fun onPageSelected(position: Int) {
                 val data = list[position]
+                currentId = data.id
                 if(data.username.isEmpty()){
                     detailView.profileNick.text = resources.getText(R.string.source)
                 } else {
@@ -83,13 +99,14 @@ class DetailFragment : Fragment(), GifItemClickListener {
                 } else {
                     detailView.sourceTxt.text = data.source
                 }
-                checkFavorite(data.id, favoriteIdStr, detailView)
+                checkFavorite(currentId, detailView)
             }
 
         })
         detailView.detailViewPager.currentItem = startPosition
         if(detailView.detailViewPager.currentItem == 0){
             val data = list[0]
+            currentId = data.id
             if(data.username.isEmpty()){
                 detailView.profileNick.text = resources.getText(R.string.source)
             } else {
@@ -102,14 +119,14 @@ class DetailFragment : Fragment(), GifItemClickListener {
             }
         }
         detailView.favoriteBtn.setOnClickListener {
-            if(favoriteIdList.contains(gifId)){
-                favoriteIdList.remove(gifId)
+            if(favoriteIdList.contains(currentId)){
+                favoriteIdList.remove(currentId)
+                detailView.favoriteBtn.setColorFilter(Color.WHITE)
                 refreshFavoriteIdData()
-                checkFavorite(gifId, favoriteIdStr, detailView)
             } else {
-                favoriteIdList.add(gifId)
+                favoriteIdList.add(currentId)
+                detailView.favoriteBtn.setColorFilter(Color.RED)
                 refreshFavoriteIdData()
-                checkFavorite(gifId, favoriteIdStr, detailView)
             }
 
         }
@@ -117,9 +134,9 @@ class DetailFragment : Fragment(), GifItemClickListener {
         return detailView
     }
 
-    fun checkFavorite(id: String, favoriteIdStr: String, detailView: View){
+    fun checkFavorite(id: String, detailView: View){
         detailView.favoriteBtn.clearColorFilter()
-        if(favoriteIdStr.contains(id)){
+        if(favoriteIdList.contains(id)){
             detailView.favoriteBtn.setColorFilter(Color.RED)
         } else {
             detailView.favoriteBtn.setColorFilter(Color.WHITE)
@@ -128,8 +145,10 @@ class DetailFragment : Fragment(), GifItemClickListener {
 
     fun refreshFavoriteIdData(){
         val editor = sharedPreferences.edit()
-        editor.putString("favoriteIdList", favoriteIdList.joinToString(","))
+        Log.e("sharedPreferences", favoriteIdList.joinToString())
+        editor.putString("favoriteIdList", favoriteIdList.joinToString())
         editor.apply()
+        loadIdToList()
     }
 
     fun bindUI(detailView: View){
@@ -151,15 +170,32 @@ class DetailFragment : Fragment(), GifItemClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        viewModel = ViewModelProvider(this, DetailViewModelFactory(trendingDataRepository)).get(DetailViewModel::class.java)
         // TODO: Use the ViewModel
-        viewModel.getTrendingDataList("gifs").observe(viewLifecycleOwner, Observer {
+        viewModel.trendingDataList.observe(viewLifecycleOwner, Observer {
             relatedAdapter.submitList(it)
         })
     }
 
     override fun movePage(type: String, id: String, position: Int) {
+        var startPoint = 0
+        var newPosition = position
+        if(position - 30 > 0){
+            startPoint = position - 30
+            newPosition = 30
+        }
+        val endPoint = if(position + 30 > relatedAdapter.currentList?.toList()!!.size){
+            relatedAdapter.currentList?.toList()!!.size-1
+        } else {
+            position+30
+        }
 
+        val gifList = ArrayList<Data>()
+        for(i in startPoint..endPoint){
+            gifList.add(relatedAdapter.currentList!![i]!!)
+        }
+        val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition)
+        Navigation.findNavController(detailView).navigate(R.id.action_detailFragment_self, bundle)
     }
 
 }

@@ -4,23 +4,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.gandan.giphyclone.data.GiphyAPIService
 import com.gandan.giphyclone.data.model.gifs.Data
+import com.gandan.giphyclone.data.repository.TrendingDataRepository
 import com.gandan.giphyclone.data.source.TrendingDataSource.Companion.ITEM_PER_PAGE
 import com.gandan.giphyclone.data.source.TrendingDataSourceFactory
+import io.reactivex.disposables.CompositeDisposable
 
-class DetailViewModel : ViewModel() {
+class DetailViewModel(private val trendingDataRepository: TrendingDataRepository) : ViewModel() {
 
-    private lateinit var trendingDataSourceFactory: TrendingDataSourceFactory
-    private lateinit var liveData: LiveData<PagedList<Data>>
+    private val compositeDisposable = CompositeDisposable()
 
-    fun getTrendingDataList(type: String): LiveData<PagedList<Data>> {
-        val config = PagedList.Config.Builder()
-            .setPageSize(ITEM_PER_PAGE)
-            .build()
+    val trendingDataList : LiveData<PagedList<Data>> by lazy {
+        trendingDataRepository.getTrendingResultData(compositeDisposable)
+    }
 
-        trendingDataSourceFactory =
-            TrendingDataSourceFactory(type)
+    fun listIsEmpty(): Boolean {
+        return trendingDataList.value?.isEmpty() ?: true
+    }
 
-        return LivePagedListBuilder(trendingDataSourceFactory, config).build()
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.dispose()
     }
 }

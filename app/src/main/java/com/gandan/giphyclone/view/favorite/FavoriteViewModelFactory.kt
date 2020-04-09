@@ -8,6 +8,7 @@ import com.gandan.giphyclone.view.searchresult.SearchResultViewModel
 class FavoriteViewModelFactory(private val favoriteSourceRepository: FavoriteSourceRepository) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return FavoriteViewModel(favoriteSourceRepository) as T
     }
 }

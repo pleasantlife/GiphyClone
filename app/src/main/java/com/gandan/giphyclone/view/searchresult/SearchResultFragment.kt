@@ -35,6 +35,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
     private lateinit var inputManager: InputMethodManager
     private lateinit var resultDataAdapter: ResultDataAdapter
     private var type: String = "gifs"
+    private val beforePage = "searchResult"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -78,7 +79,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
             clickStickerBtn()
         }
         searchResultView.searchBtn.setOnClickListener {
-            val bundle = bundleOf("keyword" to keyword)
+            val bundle = bundleOf("keyword" to keyword, "beforePage" to beforePage)
             Navigation.findNavController(searchResultView).navigate(R.id.action_searchResultFragment_to_searchFragment, bundle)
         }
 
@@ -107,7 +108,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
 
     fun bindUI(){
 
-        searchResultView.resultRecycler.setOnTouchListener { view, motionEvent ->
+        searchResultView.resultRecycler.setOnTouchListener { view, _ ->
             inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
         }
     }
@@ -144,7 +145,8 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
         for(i in startPoint..endPoint){
             gifList.add(resultDataAdapter.currentList!![i]!!)
         }
-        val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition)
+
+        val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition, "beforePage" to beforePage)
         Navigation.findNavController(searchResultView).navigate(R.id.action_searchResultFragment_to_detailFragment, bundle)
     }
 

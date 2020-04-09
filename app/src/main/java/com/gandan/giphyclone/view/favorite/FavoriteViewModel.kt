@@ -1,6 +1,5 @@
 package com.gandan.giphyclone.view.favorite
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
@@ -14,7 +13,7 @@ class FavoriteViewModel(private val favoriteSourceRepository: FavoriteSourceRepo
     private val compositeDisposable = CompositeDisposable()
 
     val  favoriteDataList : LiveData<PagedList<Data>> by lazy {
-        favoriteSourceRepository.fetchFavoriteData(compositeDisposable)
+        favoriteSourceRepository.loadFavoriteResultData(compositeDisposable)
     }
 
     fun listIsEmpty(): Boolean {

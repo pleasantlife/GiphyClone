@@ -1,12 +1,10 @@
 package com.gandan.giphyclone.data.model.gifs
 
 import android.os.Parcelable
-import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
-@Entity()
 @Parcelize
 data class Data(
     val type: String,

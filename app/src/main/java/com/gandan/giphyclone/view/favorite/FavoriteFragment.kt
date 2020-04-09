@@ -51,6 +51,11 @@ class FavoriteFragment : Fragment(), GifItemClickListener {
             layoutManager = staggeredGridLayoutManager
             adapter = resultDataAdapter
         }
+        favoriteView.searchBtn.setOnClickListener {
+            val beforePage = "favorite"
+            val bundle = bundleOf("beforePage" to beforePage)
+            Navigation.findNavController(favoriteView).navigate(R.id.action_favoriteFragment_to_searchFragment, bundle)
+        }
         return favoriteView
     }
 
@@ -90,7 +95,8 @@ class FavoriteFragment : Fragment(), GifItemClickListener {
         for(i in startPoint..endPoint){
             gifList.add(resultDataAdapter.currentList!![i]!!)
         }
-        val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition)
+        val beforePage = "favorite"
+        val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition, "beforePage" to beforePage)
         Navigation.findNavController(favoriteView).navigate(R.id.action_favoriteFragment_to_detailFragment, bundle)
     }
 

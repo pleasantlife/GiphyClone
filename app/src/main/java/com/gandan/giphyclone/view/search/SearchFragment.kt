@@ -19,7 +19,7 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.gandan.giphyclone.R
-import com.gandan.giphyclone.util.KeywordClickListener
+import com.gandan.giphyclone.util.SearchItemClickListener
 import com.gandan.giphyclone.view.SearchKeywordAdapter
 import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.android.synthetic.main.search_fragment.view.backBtnImg
@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.search_fragment.view.recentTitle
 import kotlinx.android.synthetic.main.search_fragment.view.searchBtn
 import kotlinx.android.synthetic.main.search_fragment.view.stickerBtn
 
-class SearchFragment : Fragment(), KeywordClickListener {
+class SearchFragment : Fragment(), SearchItemClickListener {
 
     companion object {
         fun newInstance() = SearchFragment()
@@ -43,6 +43,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
     private lateinit var searchKeywordAdapter: SearchKeywordAdapter
     private lateinit var inputManager: InputMethodManager
     private val keywordList = ArrayList<String>()
+    private var beforePage: String? = ""
     private var keyword: String? = ""
     private var type: String = "gifs"
     private lateinit var countdownTimer: CountDownTimer
@@ -51,6 +52,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        beforePage = arguments?.getString("beforePage", "")
         keyword = arguments?.getString("keyword", "")
         searchingView = inflater.inflate(R.layout.search_fragment, container, false)
         searchKeywordAdapter =
@@ -106,7 +108,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
         }
         searchingView.searchBtn.setOnClickListener {
             if(searchingView.keywordEditText.text.isNotEmpty()) {
-                getKeyword(searchingView.keywordEditText.text.toString())
+                moveSearchResult(searchingView.keywordEditText.text.toString())
             }
         }
 
@@ -181,7 +183,7 @@ class SearchFragment : Fragment(), KeywordClickListener {
         }
     }
 
-    override fun getKeyword(keyword: String) {
+    override fun moveSearchResult(keyword: String) {
         val bundle = bundleOf("keyword" to keyword, "type" to type)
         searchingView.keywordEditText.text.clear()
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)

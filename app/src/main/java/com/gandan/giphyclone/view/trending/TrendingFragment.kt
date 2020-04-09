@@ -14,7 +14,9 @@ import com.bumptech.glide.Glide
 
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
+import com.gandan.giphyclone.data.repository.TrendingDataRepository
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.view.ResultDataAdapter
 import kotlinx.android.synthetic.main.fragment_trending.view.*
 import kotlin.math.roundToInt
@@ -28,15 +30,17 @@ class TrendingFragment : Fragment(), GifItemClickListener {
 
     private lateinit var viewModel: TrendingViewModel
     private lateinit var resultDataAdapter: ResultDataAdapter
-    private lateinit var trendingView : View
+    private lateinit var trendingDataRepository: TrendingDataRepository
+    private lateinit var trendingView: View
     private var type = "gifs"
-    private var offset = 0
+    private val apiService = RetrofitUtil().getRetrofitService()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         trendingView = inflater.inflate(R.layout.fragment_trending, container, false)
+        trendingDataRepository = TrendingDataRepository(apiService, type)
 
         trendingView.textBtn.setOnClickListener {
             Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_searchFragment)
@@ -45,13 +49,6 @@ class TrendingFragment : Fragment(), GifItemClickListener {
             Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_searchFragment)
         }
 
-        bindUI()
-
-
-        return trendingView
-    }
-
-    private fun bindUI(){
         val requestManager = Glide.with(context!!)
         resultDataAdapter = ResultDataAdapter(
             requestManager,
@@ -64,13 +61,15 @@ class TrendingFragment : Fragment(), GifItemClickListener {
             layoutManager = gridLayoutManager
             adapter = resultDataAdapter
         }
+
+        return trendingView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TrendingViewModel::class.java)
+        viewModel = ViewModelProvider(this, TrendingViewModelFactory(trendingDataRepository)).get(TrendingViewModel::class.java)
         // TODO: Use the ViewModel
-        viewModel.getTrendingDataList(type).observe(viewLifecycleOwner, Observer {
+        viewModel.trendingDataList.observe(viewLifecycleOwner, Observer {
             resultDataAdapter.submitList(it)
         })
     }

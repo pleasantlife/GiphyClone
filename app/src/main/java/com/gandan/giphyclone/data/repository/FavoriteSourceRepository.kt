@@ -14,7 +14,7 @@ class FavoriteSourceRepository (private val apiService: GiphyAPIService, private
     lateinit var favoriteDataList: LiveData<PagedList<Data>>
     lateinit var favoriteSourceFactory: FavoriteDataSourceFactory
 
-    fun fetchFavoriteData (compositeDisposable: CompositeDisposable) : LiveData<PagedList<Data>> {
+    fun loadFavoriteResultData (compositeDisposable: CompositeDisposable) : LiveData<PagedList<Data>> {
         favoriteSourceFactory = FavoriteDataSourceFactory(compositeDisposable, apiService, idList)
 
         val config = PagedList.Config.Builder()
