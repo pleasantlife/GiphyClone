@@ -40,14 +40,7 @@ class SearchResultDataSource(private val compositeDisposable: CompositeDisposabl
             Log.e("Error", it.message.toString())
         })
         )
-
-//        val totalCount = loadTotalCount()
-//        val position = computeInitialLoadPosition(params, totalCount)
-//
-//        callback.onResult(loadRangeInternal(position), position, totalCount)
     }
 
-//    fun loadRangeInternal(startPosition: Int): List<Data> {
-//        return RetrofitUtil().getRetrofitService().getSearchResult(type, API_KEY, keyword, ITEM_PER_PAGE, startPosition).blockingGet().data
-//    }
+
 }

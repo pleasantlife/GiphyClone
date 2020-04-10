@@ -37,8 +37,6 @@ android {
 dependencies {
     def lifecycle_version = "2.2.0"
     def paging_version = "2.1.2"
-    def room_version = "2.2.5"
-
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -53,14 +51,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
     implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
-
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
@@ -68,6 +63,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
 
+    //21 미만의 api 지원을 위해 2.6.4 버전 사용
     implementation 'com.squareup.retrofit2:retrofit:2.6.4'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.4'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.4'
@@ -91,6 +87,6 @@ dependencies {
 
     // optional - RxJava support
     // implementation 'androidx.paging:paging-rxjava2:2.1.2' // For Kotlin use paging-rxjava2-ktx
-    implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
+    //implementation "androidx.paging:paging-rxjava2-ktx:$paging_version"
 
 }

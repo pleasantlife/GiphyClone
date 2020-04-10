@@ -12,7 +12,7 @@ import io.reactivex.disposables.CompositeDisposable
 class TrendingDataRepository(private val apiService: GiphyAPIService,
                              private val type: String) {
 
-    lateinit var trendingList : LiveData<PagedList<Data>>
+    private lateinit var trendingList : LiveData<PagedList<Data>>
     lateinit var trendingDataRepository: TrendingDataSourceFactory
 
     fun getTrendingResultData(compositeDisposable: CompositeDisposable) : LiveData<PagedList<Data>> {

@@ -9,8 +9,8 @@
     <color name="yellow">#F6F16C</color>
     <color name="green">#94F59B</color>
     <color name="blue">#03CCFF</color>
+    <color name="upBlue">#00bcd4</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#808080</color>
     <color name="black">#000000</color>
-
 </resources>

@@ -20,7 +20,9 @@ import com.bumptech.glide.Glide
 
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
+import com.gandan.giphyclone.data.repository.SearchResultRepository
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.util.SearchKeywordItemClickListener
 import com.gandan.giphyclone.view.RecentKeywordRecyclerAdapter
 import com.gandan.giphyclone.view.ResultDataAdapter
@@ -44,7 +46,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
     private lateinit var inputManager: InputMethodManager
     private lateinit var resultDataAdapter: ResultDataAdapter
     private lateinit var sharedPreferences: SharedPreferences
-    private var recentKeywordStr = ""
+    private lateinit var searchResultRepository: SearchResultRepository
     private var recentKeywordList = ArrayList<String>()
     private var type: String = "gifs"
     private val beforePage = "searchResult"
@@ -53,115 +55,139 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val apiService = RetrofitUtil().getRetrofitService()
+        keyword = arguments?.get("keyword").toString()
+        type = arguments?.get("type").toString()
+        searchResultRepository = SearchResultRepository(apiService)
+        searchResultView = inflater.inflate(R.layout.search_result_fragment, container, false)
+        getRecentSearchKeyword()
+        initRecentKeywordRecycler()
+        initSearchResultRecycler()
+        initButtons()
+        bindUI()
+
+        return searchResultView
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this, SearchResultViewModelFactory(searchResultRepository)).get(SearchResultViewModel::class.java)
+        viewModel.getSearchResult(keyword, type).observe(viewLifecycleOwner, Observer {
+            resultDataAdapter.submitList(it)
+        })
+        inputManager = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun getRecentSearchKeyword(){
         sharedPreferences = context?.getSharedPreferences("giphyclone", Context.MODE_PRIVATE)!!
-        recentKeywordStr = sharedPreferences.getString("recentKeyword", "")!!
+        val recentKeywordStr = sharedPreferences.getString("recentKeyword", "")!!
         if (recentKeywordStr.isNotEmpty()) {
             recentKeywordList = ArrayList(recentKeywordStr.split(","))
         }
-        searchResultView = inflater.inflate(R.layout.search_result_fragment, container, false)
+    }
 
-        keyword = arguments?.get("keyword").toString()
-        type = arguments?.get("type").toString()
-        viewModel = SearchResultViewModel()
-
+    private fun initRecentKeywordRecycler(){
         val recentKeywordAdapter = RecentKeywordRecyclerAdapter(recentKeywordList, this)
         val recentKeywordLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
         searchResultView.searchRecentKeywordRecycler.apply {
             adapter = recentKeywordAdapter
             layoutManager = recentKeywordLayoutManager
+            scrollToPosition(recentKeywordList.size-1)
         }
+    }
 
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    private fun initSearchResultRecycler(){
         val requestManager = Glide.with(this)
-        val density = resources.displayMetrics.density.toInt()
         resultDataAdapter = ResultDataAdapter(
             requestManager,
             this,
-            density
+            resources.displayMetrics.density.toInt()
         )
 
         searchResultView.resultRecycler.apply {
             adapter = resultDataAdapter
-            layoutManager = staggeredGridLayoutManager
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
+    }
+
+    private fun bindUI(){
+
         searchResultView.searchResultTitle.text = keyword
         searchResultView.keywordText.text = keyword
-        searchResultView.backBtnImg.setOnClickListener {
-            Navigation.findNavController(searchResultView).navigateUp()
+        searchResultView.resultRecycler.setOnTouchListener { view, _ ->
+            inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
         }
-
         when(type)
         {
             "gifs" -> clickGifBtn()
             "stickers" -> clickStickerBtn()
         }
+    }
+
+    private fun initButtons(){
         searchResultView.gifBtn.setOnClickListener {
             clickGifBtn()
         }
         searchResultView.stickerBtn.setOnClickListener {
             clickStickerBtn()
         }
-        searchResultView.searchBtn.setOnClickListener {
-            val bundle = bundleOf("keyword" to keyword, "beforePage" to beforePage)
-            Navigation.findNavController(searchResultView).navigate(R.id.action_searchResultFragment_to_searchFragment, bundle)
+        searchResultView.backBtnImg.setOnClickListener {
+            Navigation.findNavController(searchResultView).navigateUp()
         }
-
-        bindUI()
-
-        return searchResultView
+        searchResultView.keywordText.setOnClickListener {
+            moveToSearchPage()
+        }
+        searchResultView.searchBtn.setOnClickListener {
+            moveToSearchPage()
+        }
     }
 
-    fun clickGifBtn(){
+    private fun moveToSearchPage(){
+        val bundle = bundleOf("keyword" to keyword, "beforePage" to beforePage)
+        Navigation.findNavController(searchResultView).navigate(R.id.action_searchResultFragment_to_searchFragment, bundle)
+    }
+
+    private fun clickGifBtn(){
         type = "gifs"
         searchResultView.stickerBtn.setBackgroundColor(ContextCompat.getColor(context!!, R.color.gray))
         searchResultView.stickerBtn.setTextColor(Color.WHITE)
         searchResultView.gifBtn.setBackgroundColor(ContextCompat.getColor(context!!, R.color.green))
         searchResultView.gifBtn.setTextColor(Color.BLACK)
-        changeObserver(type)
+        if(::viewModel.isInitialized) {
+            changeObserver(type)
+        }
     }
 
-    fun clickStickerBtn(){
+    private fun clickStickerBtn(){
         type = "stickers"
         searchResultView.stickerBtn.setBackgroundColor(ContextCompat.getColor(context!!, R.color.green))
         searchResultView.stickerBtn.setTextColor(Color.BLACK)
         searchResultView.gifBtn.setBackgroundColor(ContextCompat.getColor(context!!, R.color.gray))
         searchResultView.gifBtn.setTextColor(Color.WHITE)
-        changeObserver(type)
-    }
-
-    fun bindUI(){
-
-        searchResultView.resultRecycler.setOnTouchListener { view, _ ->
-            inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
+        if(::viewModel.isInitialized) {
+            changeObserver(type)
         }
     }
 
-    fun changeObserver(type: String){
+    private fun changeObserver(type: String){
         resultDataAdapter.submitList(null)
         viewModel.getSearchResult(keyword, type).observe(viewLifecycleOwner, Observer {
             resultDataAdapter.submitList(it)
         })
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SearchResultViewModel::class.java)
-        inputManager = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
-    }
-
     override fun movePage(type: String, id: String, position: Int) {
         var startPoint = 0
-        val endPoint: Int
         var newPosition = position
         if(position - 30 > 0){
             startPoint = position - 30
             newPosition = 30
         }
-        if(position + 30 > resultDataAdapter.currentList?.toList()!!.size){
-            endPoint = resultDataAdapter.currentList?.toList()!!.size-1
+        val endPoint: Int = if(position + 30 > resultDataAdapter.currentList?.toList()!!.size){
+            resultDataAdapter.currentList?.toList()!!.size-1
         } else {
-            endPoint = position+30
+            position+30
         }
 
         val gifList = ArrayList<Data>()
@@ -174,13 +200,33 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
     }
 
     override fun moveSearchResult(keyword: String) {
-        //currentKeyword = keyword
-        //registerRecentKeyword()
+        if(!recentKeywordList.contains(keyword)) {
+            registerRecentKeyword(keyword)
+        }
         if(keyword != searchResultView.keywordText.text) {
             val bundle = bundleOf("keyword" to keyword, "type" to type)
             inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
             Navigation.findNavController(searchResultView)
                 .navigate(R.id.action_searchResultFragment_self, bundle)
         }
+    }
+
+    private fun registerRecentKeyword(keyword:String){
+        if (recentKeywordList.size == 5) {
+            recentKeywordList.removeAt(0)
+        }
+        recentKeywordList.add(keyword)
+        var keywordStr = ""
+        for (i in 0 until recentKeywordList.size) {
+
+            if (i == recentKeywordList.size - 1) {
+                keywordStr += recentKeywordList[i]
+            } else {
+                keywordStr += recentKeywordList[i] + ","
+            }
+        }
+        val editor = sharedPreferences.edit()
+        editor.putString("recentKeyword", keywordStr)
+        editor.apply()
     }
 }

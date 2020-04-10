@@ -6,11 +6,13 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
@@ -20,6 +22,8 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.gandan.giphyclone.R
+import com.gandan.giphyclone.data.repository.TrendKeywordSourceRepository
+import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.util.SearchKeywordItemClickListener
 import com.gandan.giphyclone.view.RecentKeywordRecyclerAdapter
 import com.gandan.giphyclone.view.SearchKeywordAdapter
@@ -46,7 +50,7 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
     private lateinit var inputManager: InputMethodManager
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var countdownTimer: CountDownTimer
-    private val keywordList = ArrayList<String>()
+    private lateinit var trendKeywordSourceRepository: TrendKeywordSourceRepository
     private var recentKeywordStr = ""
     private var currentKeyword = ""
     private var recentKeywordList = ArrayList<String>()
@@ -58,12 +62,25 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         initValues()
         searchingView = inflater.inflate(R.layout.search_fragment, container, false)
         bindUI()
         return searchingView
     }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProvider(this, SearchViewModelFactory(trendKeywordSourceRepository)).get(SearchViewModel::class.java)
+        viewModel.trendKeywordList.observe(viewLifecycleOwner, Observer {
+            //setRecyclerData(ArrayList(it), TRENDING_KEYWORD)
+            searchKeywordAdapter.getType(TRENDING_KEYWORD)
+            searchKeywordAdapter.submitList(it)
+            Log.e("listSize", it.size.toString())
+        })
+        inputManager = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+    }
+
+
 
     private fun initValues(){
         sharedPreferences = context?.getSharedPreferences("giphyclone", MODE_PRIVATE)!!
@@ -74,16 +91,8 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
         }
         beforePage = arguments?.getString("beforePage", "")
         keyword = arguments?.getString("keyword", "")
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-        viewModel.getKeywords().observe(viewLifecycleOwner, Observer {
-            setRecyclerData(ArrayList(it), TRENDING_KEYWORD)
-        })
-        inputManager = activity!!.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-
+        val apiService = RetrofitUtil().getRetrofitService()
+        trendKeywordSourceRepository = TrendKeywordSourceRepository(apiService)
     }
 
     private fun bindUI() {
@@ -109,12 +118,16 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
                 }
             }
         }
+        searchingView.keywordEditText.setOnFocusChangeListener { view, b ->
+            if(!view.hasFocus()){
+                inputManager.hideSoftInputFromWindow(searchingView.windowToken, 0)
+            }
+        }
         searchingView.clearBtn.setOnClickListener {
             searchingView.keywordEditText.text.clear()
         }
         searchingView.searchBtn.setOnClickListener {
             if (searchingView.keywordEditText.text.isNotEmpty()) {
-                registerRecentKeyword()
                 moveSearchResult(searchingView.keywordEditText.text.toString())
             }
         }
@@ -123,10 +136,19 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
         }
         beforePage = arguments?.getString("beforePage", "")
         keyword = arguments?.getString("keyword", "")
+        searchKeywordAdapter = SearchKeywordAdapter(this)
 
         searchingView.popularRecycler.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = searchKeywordAdapter
+        }
+
+        val recentKeywordAdapter = RecentKeywordRecyclerAdapter(recentKeywordList, this)
+        val recentKeywordLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
+        searchingView.recentKeywordRecycler.apply{
+            layoutManager = recentKeywordLayoutManager
+            adapter = recentKeywordAdapter
+            scrollToPosition(recentKeywordList.size-1)
         }
         searchingView.gifBtn.setOnClickListener {
             clickGifBtn()
@@ -185,15 +207,20 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
             override fun onFinish() {
 
                 if (keyword.length > 2) {
-                    viewModel.getAutoKeywords(keyword)
+                    viewModel.getSuggestKeywordList(keyword)
                         .observe(viewLifecycleOwner, Observer { list ->
-                            setRecyclerData(ArrayList(list), type)
+                            searchKeywordAdapter.getType(type)
+                            searchKeywordAdapter.submitList(list)
+                            //setRecyclerData(ArrayList(list), type)
+                            Log.e("listSize", list.size.toString())
                         })
                     setHeaderUI(searchingView, false)
                 } else {
-                    viewModel.getKeywords()
+                    viewModel.trendKeywordList
                         .observe(viewLifecycleOwner, Observer { list ->
-                            setRecyclerData(ArrayList(list), type)
+                            Log.e("listSize", list.size.toString())
+                            searchKeywordAdapter.getType(type)
+                            searchKeywordAdapter.submitList(list)
                         })
                     setHeaderUI(searchingView, true)
                 }
@@ -205,9 +232,9 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
         countdownTimer.start()
     }
 
-    private fun setRecyclerData(keywordList: ArrayList<String>, type: String) {
-        searchKeywordAdapter.getData(keywordList, type)
-    }
+//    private fun setRecyclerData(keywordList: ArrayList<String>, type: String) {
+//        searchKeywordAdapter.getData(keywordList, type)
+//    }
 
     private fun setHeaderUI(searchingView: View, isVisible: Boolean) {
         if (isVisible) {

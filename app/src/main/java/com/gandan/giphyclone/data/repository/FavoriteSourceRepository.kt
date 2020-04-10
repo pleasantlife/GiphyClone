@@ -11,8 +11,8 @@ import io.reactivex.disposables.CompositeDisposable
 
 class FavoriteSourceRepository (private val apiService: GiphyAPIService, private val idList: ArrayList<String>) {
 
-    lateinit var favoriteDataList: LiveData<PagedList<Data>>
-    lateinit var favoriteSourceFactory: FavoriteDataSourceFactory
+    private lateinit var favoriteDataList: LiveData<PagedList<Data>>
+    private lateinit var favoriteSourceFactory: FavoriteDataSourceFactory
 
     fun loadFavoriteResultData (compositeDisposable: CompositeDisposable) : LiveData<PagedList<Data>> {
         favoriteSourceFactory = FavoriteDataSourceFactory(compositeDisposable, apiService, idList)

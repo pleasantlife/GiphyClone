@@ -11,13 +11,10 @@ import io.reactivex.disposables.CompositeDisposable
 
 class SearchResultRepository(private val apiService: GiphyAPIService) {
 
-    lateinit var searchResultList : LiveData<PagedList<Data>>
-    lateinit var searchResultDataSourceFactory: SearchResultDataSourceFactory
+    private lateinit var searchResultList : LiveData<PagedList<Data>>
+    private lateinit var searchResultDataSourceFactory: SearchResultDataSourceFactory
 
-    fun getSearchResultData(compositeDisposable: CompositeDisposable,
-                            apiService: GiphyAPIService,
-                            keyword: String,
-                            type: String) : LiveData<PagedList<Data>> {
+    fun getSearchResultData(compositeDisposable: CompositeDisposable, keyword: String, type: String) : LiveData<PagedList<Data>> {
         searchResultDataSourceFactory =
             SearchResultDataSourceFactory(
                 compositeDisposable,

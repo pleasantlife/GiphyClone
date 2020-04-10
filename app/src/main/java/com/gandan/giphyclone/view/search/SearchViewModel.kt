@@ -1,30 +1,28 @@
 package com.gandan.giphyclone.view.search
 
-import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.gandan.giphyclone.data.repository.KeywordAPIRepository
-import com.gandan.giphyclone.data.repository.RecentKeywordRepository
+import androidx.paging.PagedList
+import com.gandan.giphyclone.data.model.suggestion.Name
+import com.gandan.giphyclone.data.repository.TrendKeywordSourceRepository
+import io.reactivex.disposables.CompositeDisposable
 
 
-class SearchViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class SearchViewModel(private val trendKeywordSourceRepository: TrendKeywordSourceRepository) : ViewModel() {
 
-    fun getKeywords() : MutableLiveData<List<String>> {
-        return KeywordAPIRepository().getTrendKeyword()
+    private val compositeDisposable = CompositeDisposable()
+
+    val trendKeywordList by lazy {
+        trendKeywordSourceRepository.getTrendKeywordData(compositeDisposable)
     }
 
-    fun getRecentKeywords(sharedPreferences: SharedPreferences): MutableLiveData<List<String>> {
-        val keywordList = MutableLiveData<List<String>>()
-        keywordList.value = RecentKeywordRepository(sharedPreferences).getRecentSearchKeywords()
-        return keywordList
+    fun getSuggestKeywordList(term: String) : LiveData<PagedList<String>>  {
+        return trendKeywordSourceRepository.getSuggestKeywordData(compositeDisposable, term)
     }
 
-    fun saveRecentKeywords(sharedPreferences: SharedPreferences) {
-
-    }
-
-    fun getAutoKeywords(term: String) : MutableLiveData<List<String>> {
-        return KeywordAPIRepository().getSuggestionKeyWord(term)
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 }

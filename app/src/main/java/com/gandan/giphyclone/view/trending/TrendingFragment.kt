@@ -43,10 +43,10 @@ class TrendingFragment : Fragment(), GifItemClickListener {
         trendingDataRepository = TrendingDataRepository(apiService, type)
 
         trendingView.textBtn.setOnClickListener {
-            Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_searchFragment)
+            moveToSearchPage()
         }
         trendingView.searchBtn.setOnClickListener {
-            Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_searchFragment)
+            moveToSearchPage()
         }
 
         val requestManager = Glide.with(context!!)
@@ -68,13 +68,18 @@ class TrendingFragment : Fragment(), GifItemClickListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, TrendingViewModelFactory(trendingDataRepository)).get(TrendingViewModel::class.java)
-        // TODO: Use the ViewModel
         viewModel.trendingDataList.observe(viewLifecycleOwner, Observer {
             resultDataAdapter.submitList(it)
         })
     }
 
+    private fun moveToSearchPage(){
+        Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_searchFragment)
+    }
+
     override fun movePage(type: String, id: String, position: Int) {
+        //현재 선택한 아이템에서 앞선 30개(최대)의 아이템과 뒤에 있는 30개(최대)의 아이템만 가져온다.
+        //모두 가져오게 되면 Parcel 용량이 커져서 에러로 강제종
         var startPoint = 0
         var newPosition = position
         if(position - 30 > 0){

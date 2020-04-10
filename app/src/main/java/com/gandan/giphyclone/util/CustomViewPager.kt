@@ -26,4 +26,6 @@ class CustomViewPager: ViewPager {
 
         super.onMeasure(widthMeasureSpec, heightSpec)
     }
+
+
 }
