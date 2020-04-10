@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gandan.giphyclone.R
-import com.gandan.giphyclone.util.SearchItemClickListener
+import com.gandan.giphyclone.util.SearchKeywordItemClickListener
 import com.gandan.giphyclone.view.search.SearchFragment.Companion.TRENDING_KEYWORD
 import kotlinx.android.synthetic.main.recycler_search_item.view.*
 
 class SearchKeywordAdapter(private var keyWordList: ArrayList<String>,
-                           private val searchItemClickListener: SearchItemClickListener) : RecyclerView.Adapter<SearchKeywordAdapter.PopularHolder>() {
+                           private val searchKeywordItemClickListener: SearchKeywordItemClickListener) : RecyclerView.Adapter<SearchKeywordAdapter.PopularHolder>() {
 
     private var type = "trendingKeyword"
 
@@ -31,12 +31,12 @@ class SearchKeywordAdapter(private var keyWordList: ArrayList<String>,
     }
 
     override fun onBindViewHolder(holder: PopularHolder, position: Int) {
-        holder.bind(keyWordList[position], type, searchItemClickListener)
+        holder.bind(keyWordList[position], type, searchKeywordItemClickListener)
     }
 
     class PopularHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(keyword: String, type: String, searchItemClickListener: SearchItemClickListener){
+        fun bind(keyword: String, type: String, searchKeywordItemClickListener: SearchKeywordItemClickListener){
             if(type == TRENDING_KEYWORD){
                 itemView.searchText.text = "#"+keyword
                 itemView.searchItemImage.setImageResource(R.drawable.ic_trending_up_white_48dp)
@@ -47,7 +47,7 @@ class SearchKeywordAdapter(private var keyWordList: ArrayList<String>,
                 itemView.searchItemImage.colorFilter = null
             }
             itemView.setOnClickListener {
-                searchItemClickListener.moveSearchResult(keyword)
+                searchKeywordItemClickListener.moveSearchResult(keyword)
             }
 
         }

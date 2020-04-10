@@ -152,80 +152,28 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/gifBtn"/>
 
-            <HorizontalScrollView
-                android:id="@+id/recentScrollView"
-                android:layout_width="match_parent"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recentKeywordRecycler"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
                 android:scrollbars="none"
+                android:overScrollMode="never"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recentTitle">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="8dp">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/recentChipOne"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="game of thrones"
-                        app:chipEndPadding="8dp"
-                        app:chipIcon="@drawable/ic_restore_white_48dp"
-                        app:chipStartPadding="8dp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/recentChipTwo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="pengsoo"
-                        app:chipEndPadding="8dp"
-                        app:chipIcon="@drawable/ic_restore_white_48dp"
-                        app:chipStartPadding="8dp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/recentChipThree"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="over the hedge"
-                        app:chipEndPadding="8dp"
-                        app:chipIcon="@drawable/ic_restore_white_48dp"
-                        app:chipStartPadding="8dp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/recentChipFour"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:text="help"
-                        app:chipEndPadding="8dp"
-                        app:chipIcon="@drawable/ic_restore_white_48dp"
-                        app:chipStartPadding="8dp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/recentChipFive"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="16dp"
-                        android:text="question mark"
-                        app:chipEndPadding="8dp"
-                        app:chipIcon="@drawable/ic_restore_white_48dp"
-                        app:chipStartPadding="8dp" />
-
-                </com.google.android.material.chip.ChipGroup>
-
-            </HorizontalScrollView>
+                app:layout_constraintTop_toBottomOf="@+id/recentTitle"/>
 
             <TextView
                 android:id="@+id/popularTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="4dp"
                 android:text="@string/popularSearch"
                 android:textColor="@color/white"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recentScrollView"/>
+                app:layout_constraintTop_toBottomOf="@+id/recentKeywordRecycler"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/popularRecycler"

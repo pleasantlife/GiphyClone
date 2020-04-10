@@ -1,6 +1,7 @@
 package com.gandan.giphyclone.view.searchresult
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,16 +14,24 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.SearchKeywordItemClickListener
+import com.gandan.giphyclone.view.RecentKeywordRecyclerAdapter
 import com.gandan.giphyclone.view.ResultDataAdapter
+import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.android.synthetic.main.search_result_fragment.view.*
+import kotlinx.android.synthetic.main.search_result_fragment.view.backBtnImg
+import kotlinx.android.synthetic.main.search_result_fragment.view.gifBtn
+import kotlinx.android.synthetic.main.search_result_fragment.view.searchBtn
+import kotlinx.android.synthetic.main.search_result_fragment.view.stickerBtn
 
-class SearchResultFragment : Fragment(), GifItemClickListener {
+class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItemClickListener{
 
     companion object {
         fun newInstance() =
@@ -34,6 +43,9 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
     private lateinit var searchResultView: View
     private lateinit var inputManager: InputMethodManager
     private lateinit var resultDataAdapter: ResultDataAdapter
+    private lateinit var sharedPreferences: SharedPreferences
+    private var recentKeywordStr = ""
+    private var recentKeywordList = ArrayList<String>()
     private var type: String = "gifs"
     private val beforePage = "searchResult"
 
@@ -41,12 +53,23 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        sharedPreferences = context?.getSharedPreferences("giphyclone", Context.MODE_PRIVATE)!!
+        recentKeywordStr = sharedPreferences.getString("recentKeyword", "")!!
+        if (recentKeywordStr.isNotEmpty()) {
+            recentKeywordList = ArrayList(recentKeywordStr.split(","))
+        }
         searchResultView = inflater.inflate(R.layout.search_result_fragment, container, false)
 
         keyword = arguments?.get("keyword").toString()
         type = arguments?.get("type").toString()
         viewModel = SearchResultViewModel()
+
+        val recentKeywordAdapter = RecentKeywordRecyclerAdapter(recentKeywordList, this)
+        val recentKeywordLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
+        searchResultView.searchRecentKeywordRecycler.apply {
+            adapter = recentKeywordAdapter
+            layoutManager = recentKeywordLayoutManager
+        }
 
         val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         val requestManager = Glide.with(this)
@@ -150,4 +173,14 @@ class SearchResultFragment : Fragment(), GifItemClickListener {
         Navigation.findNavController(searchResultView).navigate(R.id.action_searchResultFragment_to_detailFragment, bundle)
     }
 
+    override fun moveSearchResult(keyword: String) {
+        //currentKeyword = keyword
+        //registerRecentKeyword()
+        if(keyword != searchResultView.keywordText.text) {
+            val bundle = bundleOf("keyword" to keyword, "type" to type)
+            inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
+            Navigation.findNavController(searchResultView)
+                .navigate(R.id.action_searchResultFragment_self, bundle)
+        }
+    }
 }

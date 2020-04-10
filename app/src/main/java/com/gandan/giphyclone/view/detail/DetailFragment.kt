@@ -44,9 +44,7 @@ class DetailFragment : Fragment(), GifItemClickListener {
     fun loadIdToList() {
         val favoriteIdStr = sharedPreferences.getString("favoriteIdList", "")!!
         if(favoriteIdStr.isNotEmpty()){
-            favoriteIdList = ArrayList(favoriteIdStr.trim().splitToSequence(' ')
-                .filter { it.isNotEmpty() } // or: .filter { it.isNotBlank() }
-                .toList())
+            favoriteIdList = ArrayList(favoriteIdStr.split(","))
         }
     }
 
@@ -145,8 +143,15 @@ class DetailFragment : Fragment(), GifItemClickListener {
 
     fun refreshFavoriteIdData(){
         val editor = sharedPreferences.edit()
-        Log.e("sharedPreferences", favoriteIdList.joinToString())
-        editor.putString("favoriteIdList", favoriteIdList.joinToString())
+        var favoriteIdStr = "";
+        for(i in 0 until favoriteIdList.size){
+            favoriteIdStr += if(i == favoriteIdList.size-1){
+                favoriteIdList[i]
+            } else {
+                favoriteIdList[i]+","
+            }
+        }
+        editor.putString("favoriteIdList", favoriteIdStr)
         editor.apply()
         loadIdToList()
     }

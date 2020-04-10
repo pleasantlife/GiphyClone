@@ -1,6 +1,6 @@
 package com.gandan.giphyclone.util
 
-interface SearchItemClickListener {
+interface SearchKeywordItemClickListener {
 
     fun moveSearchResult(keyword: String)
 }
