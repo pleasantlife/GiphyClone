@@ -1,19 +1,18 @@
 package com.gandan.giphyclone.data.source
 
 import androidx.paging.DataSource
-import com.gandan.giphyclone.data.GiphyAPIService
+import com.gandan.giphyclone.data.api.GiphyAPIService
 import com.gandan.giphyclone.data.model.gifs.Data
 import io.reactivex.disposables.CompositeDisposable
 
-class TrendingDataSourceFactory(private val compositeDisposable: CompositeDisposable,
-                                private val apiService: GiphyAPIService,
-                                private val type: String): DataSource.Factory<Int, Data>() {
+class TrendingDataSourceFactory(
+    compositeDisposable: CompositeDisposable,
+    apiService: GiphyAPIService,
+    type: String): DataSource.Factory<Int, Data>() {
 
-    lateinit var trendingDataSource : DataSource<Int, Data>
+    val trendingDataSource = TrendingDataSource(compositeDisposable, apiService, type)
 
     override fun create(): DataSource<Int, Data> {
-        trendingDataSource =
-            TrendingDataSource(compositeDisposable, apiService, type)
         return trendingDataSource
     }
 }

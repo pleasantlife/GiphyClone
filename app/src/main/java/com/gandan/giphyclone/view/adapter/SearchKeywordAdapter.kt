@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view
+package com.gandan.giphyclone.view.adapter
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,13 +8,13 @@ import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gandan.giphyclone.R
-import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.util.SearchKeywordItemClickListener
-import com.gandan.giphyclone.view.search.SearchFragment.Companion.TRENDING_KEYWORD
+import com.gandan.giphyclone.view.fragment.SearchFragment.Companion.TRENDING_KEYWORD
 import kotlinx.android.synthetic.main.recycler_search_item.view.*
 
 class SearchKeywordAdapter(private val searchKeywordItemClickListener: SearchKeywordItemClickListener) : PagedListAdapter<String, SearchKeywordAdapter.PopularHolder>(
-    DIFF_CALLBACK) {
+    DIFF_CALLBACK
+) {
 
 
     companion object {
@@ -33,7 +33,9 @@ class SearchKeywordAdapter(private val searchKeywordItemClickListener: SearchKey
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PopularHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_search_item, parent, false)
-        return PopularHolder(view)
+        return PopularHolder(
+            view
+        )
     }
 
 //    fun getData(keyWordList: ArrayList<String>, type: String){

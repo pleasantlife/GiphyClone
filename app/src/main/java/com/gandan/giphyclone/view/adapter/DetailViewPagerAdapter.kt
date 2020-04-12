@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.detail
+package com.gandan.giphyclone.view.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

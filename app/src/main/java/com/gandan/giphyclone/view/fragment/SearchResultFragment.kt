@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.searchresult
+package com.gandan.giphyclone.view.fragment
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -22,11 +22,13 @@ import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.data.repository.SearchResultRepository
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.NetworkState
 import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.util.SearchKeywordItemClickListener
-import com.gandan.giphyclone.view.RecentKeywordRecyclerAdapter
-import com.gandan.giphyclone.view.ResultDataAdapter
-import kotlinx.android.synthetic.main.search_fragment.view.*
+import com.gandan.giphyclone.view.adapter.ResultDataAdapter
+import com.gandan.giphyclone.view.adapter.SuggestKeywordRecyclerAdapter
+import com.gandan.giphyclone.view.viewmodel.SearchResultViewModel
+import com.gandan.giphyclone.view.viewmodelfactory.SearchResultViewModelFactory
 import kotlinx.android.synthetic.main.search_result_fragment.view.*
 import kotlinx.android.synthetic.main.search_result_fragment.view.backBtnImg
 import kotlinx.android.synthetic.main.search_result_fragment.view.gifBtn
@@ -45,6 +47,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
     private lateinit var searchResultView: View
     private lateinit var inputManager: InputMethodManager
     private lateinit var resultDataAdapter: ResultDataAdapter
+    private lateinit var suggestKeywordRecyclerAdapter: SuggestKeywordRecyclerAdapter
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var searchResultRepository: SearchResultRepository
     private var recentKeywordList = ArrayList<String>()
@@ -61,7 +64,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
         searchResultRepository = SearchResultRepository(apiService)
         searchResultView = inflater.inflate(R.layout.search_result_fragment, container, false)
         getRecentSearchKeyword()
-        initRecentKeywordRecycler()
+        initSuggestKeywordRecycler()
         initSearchResultRecycler()
         initButtons()
         bindUI()
@@ -75,6 +78,16 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
         viewModel.getSearchResult(keyword, type).observe(viewLifecycleOwner, Observer {
             resultDataAdapter.submitList(it)
         })
+        viewModel.getSuggestKeyword(keyword).observe(viewLifecycleOwner, Observer {
+            suggestKeywordRecyclerAdapter.submitList(it)
+        })
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            if(it == NetworkState.ERROR){
+                searchResultView.errorText.visibility = View.VISIBLE
+            } else {
+                searchResultView.errorText.visibility = View.GONE
+            }
+        })
         inputManager = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
@@ -87,12 +100,12 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
         }
     }
 
-    private fun initRecentKeywordRecycler(){
-        val recentKeywordAdapter = RecentKeywordRecyclerAdapter(recentKeywordList, this)
-        val recentKeywordLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
-        searchResultView.searchRecentKeywordRecycler.apply {
-            adapter = recentKeywordAdapter
-            layoutManager = recentKeywordLayoutManager
+    private fun initSuggestKeywordRecycler(){
+        suggestKeywordRecyclerAdapter = SuggestKeywordRecyclerAdapter(this)
+        val suggestLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, true)
+        searchResultView.suggestKeywordRecycler.apply {
+            adapter = suggestKeywordRecyclerAdapter
+            layoutManager = suggestLayoutManager
             scrollToPosition(recentKeywordList.size-1)
         }
     }

@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.search
+package com.gandan.giphyclone.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +15,10 @@ class SearchViewModel(private val trendKeywordSourceRepository: TrendKeywordSour
 
     val trendKeywordList by lazy {
         trendKeywordSourceRepository.getTrendKeywordData(compositeDisposable)
+    }
+
+    val networkState by lazy {
+        trendKeywordSourceRepository.getTrendKeywordNetworkState()
     }
 
     fun getSuggestKeywordList(term: String) : LiveData<PagedList<String>>  {

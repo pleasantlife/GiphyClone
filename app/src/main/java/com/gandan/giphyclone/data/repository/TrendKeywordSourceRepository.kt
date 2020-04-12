@@ -1,18 +1,14 @@
 package com.gandan.giphyclone.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.gandan.giphyclone.data.GiphyAPIService
-import com.gandan.giphyclone.data.model.suggestion.Name
+import com.gandan.giphyclone.data.api.GiphyAPIService
 import com.gandan.giphyclone.data.source.SuggestKeywordDataSourceFactory
 import com.gandan.giphyclone.data.source.TrendKeywordDataSourceFactory
 import com.gandan.giphyclone.data.source.TrendingDataSource
-import com.gandan.giphyclone.util.RetrofitUtil
-import com.gandan.giphyclone.util.RetrofitUtil.Companion.API_KEY
+import com.gandan.giphyclone.util.NetworkState
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 
 class TrendKeywordSourceRepository(private val apiService: GiphyAPIService) {
 
@@ -46,5 +42,9 @@ class TrendKeywordSourceRepository(private val apiService: GiphyAPIService) {
         suggestKeywordList = LivePagedListBuilder(suggestKeywordDataSourceFactory, config).build()
 
         return suggestKeywordList
+    }
+
+    fun getTrendKeywordNetworkState(): LiveData<NetworkState> {
+        return trendKeywordDataSourceFactory.trendKeywordDataSource.networkState
     }
 }

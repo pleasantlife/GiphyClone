@@ -6,9 +6,9 @@
     app:startDestination="@id/trendingFragment">
     <fragment
         android:id="@+id/trendingFragment"
-        android:name="com.gandan.giphyclone.view.trending.TrendingFragment"
+        android:name="com.gandan.giphyclone.view.fragment.TrendingFragment"
         android:label="fragment_trending"
-        tools:layout="@layout/fragment_trending" >
+        tools:layout="@layout/trending_fragment" >
         <action
             android:id="@+id/action_trendingFragment_to_searchFragment"
             app:destination="@id/searchFragment"
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.gandan.giphyclone.view.search.SearchFragment"
+        android:name="com.gandan.giphyclone.view.fragment.SearchFragment"
         android:label="search_fragment"
         tools:layout="@layout/search_fragment">
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.gandan.giphyclone.view.favorite.FavoriteFragment"
+        android:name="com.gandan.giphyclone.view.fragment.FavoriteFragment"
         android:label="favorite_fragment"
         tools:layout="@layout/favorite_fragment">
         <action
@@ -47,7 +47,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.gandan.giphyclone.view.detail.DetailFragment"
+        android:name="com.gandan.giphyclone.view.fragment.DetailFragment"
         android:label="detail_fragment"
         tools:layout="@layout/detail_fragment" >
         <action
@@ -59,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchResultFragment"
-        android:name="com.gandan.giphyclone.view.searchresult.SearchResultFragment"
+        android:name="com.gandan.giphyclone.view.fragment.SearchResultFragment"
         android:label="search_result_fragment"
         tools:layout="@layout/search_result_fragment" >
         <action

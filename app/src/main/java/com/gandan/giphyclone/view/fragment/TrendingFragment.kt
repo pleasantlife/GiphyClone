@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.trending
+package com.gandan.giphyclone.view.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,9 +16,12 @@ import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.data.repository.TrendingDataRepository
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.NetworkState
 import com.gandan.giphyclone.util.RetrofitUtil
-import com.gandan.giphyclone.view.ResultDataAdapter
-import kotlinx.android.synthetic.main.fragment_trending.view.*
+import com.gandan.giphyclone.view.adapter.ResultDataAdapter
+import com.gandan.giphyclone.view.viewmodelfactory.TrendingViewModelFactory
+import com.gandan.giphyclone.view.viewmodel.TrendingViewModel
+import kotlinx.android.synthetic.main.trending_fragment.view.*
 import kotlin.math.roundToInt
 
 class TrendingFragment : Fragment(), GifItemClickListener {
@@ -39,7 +42,7 @@ class TrendingFragment : Fragment(), GifItemClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        trendingView = inflater.inflate(R.layout.fragment_trending, container, false)
+        trendingView = inflater.inflate(R.layout.trending_fragment, container, false)
         trendingDataRepository = TrendingDataRepository(apiService, type)
 
         trendingView.textBtn.setOnClickListener {
@@ -67,11 +70,25 @@ class TrendingFragment : Fragment(), GifItemClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, TrendingViewModelFactory(trendingDataRepository)).get(TrendingViewModel::class.java)
+        viewModel = ViewModelProvider(this,
+            TrendingViewModelFactory(
+                trendingDataRepository
+            )
+        ).get(
+            TrendingViewModel::class.java)
         viewModel.trendingDataList.observe(viewLifecycleOwner, Observer {
             resultDataAdapter.submitList(it)
         })
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            if(it == NetworkState.ERROR){
+                trendingView.errorText.visibility = View.VISIBLE
+            } else {
+                trendingView.errorText.visibility = View.GONE
+            }
+        })
     }
+
+
 
     private fun moveToSearchPage(){
         Navigation.findNavController(trendingView).navigate(R.id.action_trendingFragment_to_searchFragment)

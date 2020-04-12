@@ -1,19 +1,23 @@
-package com.gandan.giphyclone.view.trending
+package com.gandan.giphyclone.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
-import com.gandan.giphyclone.data.GiphyAPIService
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.data.repository.TrendingDataRepository
+import com.gandan.giphyclone.util.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
-class TrendingViewModel(trendingSourceRepository: TrendingDataRepository) : ViewModel() {
+class DetailViewModel(private val trendingDataRepository: TrendingDataRepository) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
     val trendingDataList : LiveData<PagedList<Data>> by lazy {
-        trendingSourceRepository.getTrendingResultData(compositeDisposable)
+        trendingDataRepository.getTrendingResultData(compositeDisposable)
+    }
+
+    val networkState: LiveData<NetworkState> by lazy {
+        trendingDataRepository.getNetworkState()
     }
 
     fun listIsEmpty(): Boolean {

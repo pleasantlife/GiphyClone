@@ -12,7 +12,10 @@
     <string name="stickers" translatable="false">Stickers</string>
     <string name="source" translatable="false">Source</string>
     <string name="unknown" translatable="false">Unknown</string>
+    <string name="searchResult">Search result</string>
     <string name="recentSearch">Recent searches</string>
+    <string name="relatedSearch">Related searches</string>
     <string name="popularSearch">Popular searches</string>
     <string name="backButtonDescription">Back button</string>
+    <string name="checkConnection">Please check the connection status</string>
 </resources>

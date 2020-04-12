@@ -1,4 +1,4 @@
-package com.gandan.giphyclone.view.search
+package com.gandan.giphyclone.view.fragment
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Context.MODE_PRIVATE
@@ -6,13 +6,11 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
@@ -23,18 +21,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.repository.TrendKeywordSourceRepository
+import com.gandan.giphyclone.util.NetworkState
 import com.gandan.giphyclone.util.RetrofitUtil
 import com.gandan.giphyclone.util.SearchKeywordItemClickListener
-import com.gandan.giphyclone.view.RecentKeywordRecyclerAdapter
-import com.gandan.giphyclone.view.SearchKeywordAdapter
+import com.gandan.giphyclone.view.adapter.RecentKeywordRecyclerAdapter
+import com.gandan.giphyclone.view.adapter.SearchKeywordAdapter
+import com.gandan.giphyclone.view.viewmodel.SearchViewModel
+import com.gandan.giphyclone.view.viewmodelfactory.SearchViewModelFactory
 import kotlinx.android.synthetic.main.search_fragment.view.*
 import kotlinx.android.synthetic.main.search_fragment.view.backBtnImg
 import kotlinx.android.synthetic.main.search_fragment.view.gifBtn
 import kotlinx.android.synthetic.main.search_fragment.view.keywordEditText
-import kotlinx.android.synthetic.main.search_fragment.view.recentTitle
+import kotlinx.android.synthetic.main.search_fragment.view.relatedTitle
 import kotlinx.android.synthetic.main.search_fragment.view.searchBtn
 import kotlinx.android.synthetic.main.search_fragment.view.stickerBtn
-import kotlinx.android.synthetic.main.search_result_fragment.view.*
 
 class SearchFragment : Fragment(), SearchKeywordItemClickListener {
 
@@ -72,10 +72,15 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this, SearchViewModelFactory(trendKeywordSourceRepository)).get(SearchViewModel::class.java)
         viewModel.trendKeywordList.observe(viewLifecycleOwner, Observer {
-            //setRecyclerData(ArrayList(it), TRENDING_KEYWORD)
             searchKeywordAdapter.getType(TRENDING_KEYWORD)
             searchKeywordAdapter.submitList(it)
-            Log.e("listSize", it.size.toString())
+        })
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            if(it == NetworkState.ERROR) {
+                searchingView.errorText.visibility = View.VISIBLE
+            } else {
+                searchingView.errorText.visibility = View.GONE
+            }
         })
         inputManager = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
     }
@@ -112,9 +117,13 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
                     searchingView.clearBtn.visibility = View.GONE
                 }
                 if (it.length > 2) {
-                    changeKeywordSuggest(it.toString(), SEARCHING_KEYWORD)
+                    changeKeywordSuggest(it.toString(),
+                        SEARCHING_KEYWORD
+                    )
                 } else {
-                    changeKeywordSuggest(it.toString(), TRENDING_KEYWORD)
+                    changeKeywordSuggest(it.toString(),
+                        TRENDING_KEYWORD
+                    )
                 }
             }
         }
@@ -211,14 +220,11 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
                         .observe(viewLifecycleOwner, Observer { list ->
                             searchKeywordAdapter.getType(type)
                             searchKeywordAdapter.submitList(list)
-                            //setRecyclerData(ArrayList(list), type)
-                            Log.e("listSize", list.size.toString())
                         })
                     setHeaderUI(searchingView, false)
                 } else {
                     viewModel.trendKeywordList
                         .observe(viewLifecycleOwner, Observer { list ->
-                            Log.e("listSize", list.size.toString())
                             searchKeywordAdapter.getType(type)
                             searchKeywordAdapter.submitList(list)
                         })
@@ -238,11 +244,11 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
 
     private fun setHeaderUI(searchingView: View, isVisible: Boolean) {
         if (isVisible) {
-            searchingView.recentTitle.visibility = View.VISIBLE
+            searchingView.relatedTitle.visibility = View.VISIBLE
             searchingView.recentKeywordRecycler.visibility = View.VISIBLE
             searchingView.popularTitle.visibility = View.VISIBLE
         } else {
-            searchingView.recentTitle.visibility = View.GONE
+            searchingView.relatedTitle.visibility = View.GONE
             searchingView.recentKeywordRecycler.visibility = View.GONE
             searchingView.popularTitle.visibility = View.GONE
         }

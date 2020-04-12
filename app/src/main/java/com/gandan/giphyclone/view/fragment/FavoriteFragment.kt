@@ -1,7 +1,6 @@
-package com.gandan.giphyclone.view.favorite
+package com.gandan.giphyclone.view.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,8 +17,11 @@ import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.data.repository.FavoriteSourceRepository
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.NetworkState
 import com.gandan.giphyclone.util.RetrofitUtil
-import com.gandan.giphyclone.view.ResultDataAdapter
+import com.gandan.giphyclone.view.adapter.ResultDataAdapter
+import com.gandan.giphyclone.view.viewmodelfactory.FavoriteViewModelFactory
+import com.gandan.giphyclone.view.viewmodel.FavoriteViewModel
 import kotlinx.android.synthetic.main.favorite_fragment.view.*
 
 class FavoriteFragment : Fragment(), GifItemClickListener {
@@ -70,10 +72,22 @@ class FavoriteFragment : Fragment(), GifItemClickListener {
         }
 
         val favoriteSourceRepository = FavoriteSourceRepository(apiService, idList)
-        viewModel = ViewModelProvider(this, FavoriteViewModelFactory(favoriteSourceRepository)).get(FavoriteViewModel::class.java)
+        viewModel = ViewModelProvider(this,
+            FavoriteViewModelFactory(
+                favoriteSourceRepository
+            )
+        ).get(
+            FavoriteViewModel::class.java)
         // TODO: Use the ViewModel
         viewModel.favoriteDataList.observe(viewLifecycleOwner, Observer {
             resultDataAdapter.submitList(it)
+        })
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            if(it == NetworkState.ERROR && idList.size > 0){
+                favoriteView.errorText.visibility = View.VISIBLE
+            } else {
+                favoriteView.errorText.visibility = View.GONE
+            }
         })
     }
 

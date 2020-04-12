@@ -1,7 +1,7 @@
 package com.gandan.giphyclone.util
 
 import android.util.Log
-import com.gandan.giphyclone.data.GiphyAPIService
+import com.gandan.giphyclone.data.api.GiphyAPIService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

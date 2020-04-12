@@ -1,14 +1,14 @@
-package com.gandan.giphyclone.view.detail
+package com.gandan.giphyclone.view.fragment
 
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,8 +21,12 @@ import com.gandan.giphyclone.R
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.data.repository.TrendingDataRepository
 import com.gandan.giphyclone.util.GifItemClickListener
+import com.gandan.giphyclone.util.NetworkState
 import com.gandan.giphyclone.util.RetrofitUtil
-import com.gandan.giphyclone.view.ResultDataAdapter
+import com.gandan.giphyclone.view.adapter.ResultDataAdapter
+import com.gandan.giphyclone.view.viewmodelfactory.DetailViewModelFactory
+import com.gandan.giphyclone.view.adapter.DetailViewPagerAdapter
+import com.gandan.giphyclone.view.viewmodel.DetailViewModel
 import kotlinx.android.synthetic.main.detail_fragment.view.*
 
 class DetailFragment : Fragment(), GifItemClickListener {
@@ -68,7 +72,12 @@ class DetailFragment : Fragment(), GifItemClickListener {
 
 
         detailView.detailViewPager.apply {
-            adapter = DetailViewPagerAdapter(list, context!!, requestManager, resources.displayMetrics.density.toInt())
+            adapter = DetailViewPagerAdapter(
+                list,
+                context!!,
+                requestManager,
+                resources.displayMetrics.density.toInt()
+            )
             pageMargin = resources.getDimension(R.dimen.viewPagerMargin).toInt()
         }
         detailView.detailViewPager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
@@ -142,7 +151,7 @@ class DetailFragment : Fragment(), GifItemClickListener {
     }
 
     fun refreshFavoriteIdData(){
-        val editor = sharedPreferences.edit()
+
         var favoriteIdStr = "";
         for(i in 0 until favoriteIdList.size){
             favoriteIdStr += if(i == favoriteIdList.size-1){
@@ -151,6 +160,7 @@ class DetailFragment : Fragment(), GifItemClickListener {
                 favoriteIdList[i]+","
             }
         }
+        val editor = sharedPreferences.edit()
         editor.putString("favoriteIdList", favoriteIdStr)
         editor.apply()
         loadIdToList()
@@ -175,10 +185,22 @@ class DetailFragment : Fragment(), GifItemClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this, DetailViewModelFactory(trendingDataRepository)).get(DetailViewModel::class.java)
+        viewModel = ViewModelProvider(this,
+            DetailViewModelFactory(
+                trendingDataRepository
+            )
+        ).get(
+            DetailViewModel::class.java)
         // TODO: Use the ViewModel
         viewModel.trendingDataList.observe(viewLifecycleOwner, Observer {
             relatedAdapter.submitList(it)
+        })
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            if(it == NetworkState.ERROR){
+                detailView.errorText.visibility = View.VISIBLE
+            } else {
+                detailView.errorText.visibility = View.GONE
+            }
         })
     }
 

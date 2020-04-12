@@ -3,10 +3,11 @@ package com.gandan.giphyclone.data.repository
 import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import com.gandan.giphyclone.data.GiphyAPIService
+import com.gandan.giphyclone.data.api.GiphyAPIService
 import com.gandan.giphyclone.data.model.gifs.Data
 import com.gandan.giphyclone.data.source.FavoriteDataSourceFactory
 import com.gandan.giphyclone.data.source.TrendingDataSource
+import com.gandan.giphyclone.util.NetworkState
 import io.reactivex.disposables.CompositeDisposable
 
 class FavoriteSourceRepository (private val apiService: GiphyAPIService, private val idList: ArrayList<String>) {
@@ -27,8 +28,7 @@ class FavoriteSourceRepository (private val apiService: GiphyAPIService, private
         return favoriteDataList
     }
 
-//    fun getNetworkState(): LiveData<NetworkState> {
-//        return Transformations.switchMap<MovieDataSource, NetworkState>(
-//            moviesDataSourceFactory.moviesLiveDataSource, MovieDataSource::networkState)
-//    }
+   fun getNetworkState(): LiveData<NetworkState> {
+        return favoriteSourceFactory.favoriteDataSource.networkState
+   }
 }
