@@ -1,8 +1,10 @@
 package com.gandan.giphyclone
 
+import com.gandan.giphyclone.view.viewmodel.FavoriteViewModel
 import org.junit.Test
 
 import org.junit.Assert.*
+import org.junit.Before
 import org.mockito.Mock
 
 /**

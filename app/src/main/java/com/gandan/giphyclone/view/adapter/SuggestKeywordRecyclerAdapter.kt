@@ -43,7 +43,6 @@ class SuggestKeywordRecyclerAdapter(private val searchKeywordItemClickListener: 
 
         fun bind(keyword: String, searchKeywordItemClickListener: SearchKeywordItemClickListener){
             itemView.relatedKeywordChip.text = "#"+keyword
-            itemView.relatedKeywordChip.chipIcon!!.setVisible(false, true)
             itemView.relatedKeywordChip.setOnClickListener {
                 searchKeywordItemClickListener.moveSearchResult(keyword)
             }
