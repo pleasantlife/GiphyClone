@@ -1,6 +1,7 @@
 package com.gandan.giphyclone.util
 
 import android.util.Log
+import com.gandan.giphyclone.BuildConfig
 import com.gandan.giphyclone.data.api.GiphyAPIService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,10 +17,13 @@ class RetrofitUtil {
     }
 
     fun getRetrofitService(): GiphyAPIService {
-        val client = OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor{
-            Log.w("GiphyLog::", it)
-        }.setLevel(HttpLoggingInterceptor.Level.BODY)).build()
-        return Retrofit.Builder().baseUrl(BASE_URL).client(client)
+        val okHttpClient = OkHttpClient.Builder()
+                if(BuildConfig.DEBUG) {
+                    okHttpClient.addInterceptor(HttpLoggingInterceptor {
+                        Log.w("GiphyLog::", it)
+                    }.setLevel(HttpLoggingInterceptor.Level.BODY))
+                }
+        return Retrofit.Builder().baseUrl(BASE_URL).client(okHttpClient.build())
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build().create(GiphyAPIService::class.java)

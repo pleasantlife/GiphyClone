@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.gandan.giphyclone.R
 import com.gandan.giphyclone.util.SearchKeywordItemClickListener
-import kotlinx.android.synthetic.main.recycler_recent_keyword_chip.view.*
 import kotlinx.android.synthetic.main.recycler_related_keyword_chip.view.*
 
 class SuggestKeywordRecyclerAdapter(private val searchKeywordItemClickListener: SearchKeywordItemClickListener):
