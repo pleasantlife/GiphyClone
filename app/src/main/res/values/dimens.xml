@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="titleSize">24dp</dimen>
+    <dimen name="subTitleSize">18dp</dimen>
     <dimen name="viewPagerMargin">16dp</dimen>
 </resources>

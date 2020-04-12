@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
@@ -45,13 +46,6 @@ class DetailFragment : Fragment(), GifItemClickListener {
     private var currentId = ""
     private val apiService = RetrofitUtil().getRetrofitService()
 
-    fun loadIdToList() {
-        val favoriteIdStr = sharedPreferences.getString("favoriteIdList", "")!!
-        if(favoriteIdStr.isNotEmpty()){
-            favoriteIdList = ArrayList(favoriteIdStr.split(","))
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -64,9 +58,6 @@ class DetailFragment : Fragment(), GifItemClickListener {
         val startPosition = arguments?.get("startPosition") as Int
         val requestManager= Glide.with(this)
         trendingDataRepository = TrendingDataRepository(apiService, "gifs")
-        detailView.searchBtn.setOnClickListener {
-            Navigation.findNavController(detailView).navigate(R.id.action_detailFragment_to_searchFragment)
-        }
 
         checkFavorite(gifId, detailView)
 
@@ -141,48 +132,6 @@ class DetailFragment : Fragment(), GifItemClickListener {
         return detailView
     }
 
-    fun checkFavorite(id: String, detailView: View){
-        detailView.favoriteBtn.clearColorFilter()
-        if(favoriteIdList.contains(id)){
-            detailView.favoriteBtn.setColorFilter(Color.RED)
-        } else {
-            detailView.favoriteBtn.setColorFilter(Color.WHITE)
-        }
-    }
-
-    fun refreshFavoriteIdData(){
-
-        var favoriteIdStr = "";
-        for(i in 0 until favoriteIdList.size){
-            favoriteIdStr += if(i == favoriteIdList.size-1){
-                favoriteIdList[i]
-            } else {
-                favoriteIdList[i]+","
-            }
-        }
-        val editor = sharedPreferences.edit()
-        editor.putString("favoriteIdList", favoriteIdStr)
-        editor.apply()
-        loadIdToList()
-    }
-
-    fun bindUI(detailView: View){
-        val requestManager = Glide.with(this)
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        relatedAdapter = ResultDataAdapter(
-            requestManager,
-            this,
-            resources.displayMetrics.density.toInt()
-        )
-        detailView.backBtnImg.setOnClickListener {
-            Navigation.findNavController(detailView).navigateUp()
-        }
-        detailView.relatedRecycler.apply {
-            layoutManager = staggeredGridLayoutManager
-            adapter = relatedAdapter
-        }
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(this,
@@ -223,6 +172,60 @@ class DetailFragment : Fragment(), GifItemClickListener {
         }
         val bundle = bundleOf("gifId" to id, "list" to gifList, "startPosition" to newPosition)
         Navigation.findNavController(detailView).navigate(R.id.action_detailFragment_self, bundle)
+    }
+
+    private fun loadIdToList() {
+        val favoriteIdStr = sharedPreferences.getString("favoriteIdList", "")!!
+        if(favoriteIdStr.isNotEmpty()){
+            favoriteIdList = ArrayList(favoriteIdStr.split(","))
+        }
+    }
+
+    private fun checkFavorite(id: String, detailView: View){
+        detailView.favoriteBtn.clearColorFilter()
+        if(favoriteIdList.contains(id)){
+            detailView.favoriteBtn.setColorFilter(Color.RED)
+        } else {
+            detailView.favoriteBtn.setColorFilter(Color.WHITE)
+        }
+    }
+
+    private fun refreshFavoriteIdData(){
+
+        var favoriteIdStr = "";
+        for(i in 0 until favoriteIdList.size){
+            favoriteIdStr += if(i == favoriteIdList.size-1){
+                favoriteIdList[i]
+            } else {
+                favoriteIdList[i]+","
+            }
+        }
+        val editor = sharedPreferences.edit()
+        editor.putString("favoriteIdList", favoriteIdStr)
+        editor.apply()
+        loadIdToList()
+    }
+
+    private fun bindUI(detailView: View){
+        val requestManager = Glide.with(this)
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        relatedAdapter = ResultDataAdapter(
+            requestManager,
+            this,
+            resources.displayMetrics.density.toInt()
+        )
+        detailView.backBtnImg.setOnClickListener {
+            Navigation.findNavController(detailView).navigateUp()
+        }
+        detailView.backBtnImg.setColorFilter(ContextCompat.getColor(context!!, R.color.blue))
+        detailView.searchBtn.setOnClickListener {
+            Navigation.findNavController(detailView).navigate(R.id.action_detailFragment_to_searchFragment)
+        }
+        detailView.searchBtn.setColorFilter(ContextCompat.getColor(context!!, R.color.red))
+        detailView.relatedRecycler.apply {
+            layoutManager = staggeredGridLayoutManager
+            adapter = relatedAdapter
+        }
     }
 
 }

@@ -86,6 +86,7 @@
         android:text="@string/checkConnection"
         android:textColor="@color/white"
         android:background="@color/red"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/recyclerTrending"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

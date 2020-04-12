@@ -131,6 +131,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/trending"
+                        android:textSize="@dimen/subTitleSize"
+                        android:textColor="@color/white"
                         app:layout_constraintTop_toBottomOf="@+id/sourceTxt"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -158,8 +160,9 @@
         android:text="@string/checkConnection"
         android:textColor="@color/white"
         android:background="@color/red"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

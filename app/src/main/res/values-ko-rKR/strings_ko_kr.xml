@@ -9,5 +9,6 @@
     <string name="popularSearch">인기 검색어</string>
     <string name="relatedSearch">연관 검색어</string>
     <string name="backButtonDescription">뒤로가기 버튼</string>
+    <string name="emptyFavorite">아직 찜해둔 것이 없네요</string>
     <string name="checkConnection">연결 상태를 확인해 주세요.</string>
 </resources>

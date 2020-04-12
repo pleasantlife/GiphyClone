@@ -105,6 +105,7 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
         searchingView.backBtnImg.setOnClickListener {
             Navigation.findNavController(searchingView).navigateUp()
         }
+        searchingView.backBtnImg.setColorFilter(ContextCompat.getColor(context!!, R.color.blue))
         if (keyword != null) {
             searchingView.keywordEditText.setText(keyword)
         }
@@ -150,6 +151,9 @@ class SearchFragment : Fragment(), SearchKeywordItemClickListener {
         searchingView.popularRecycler.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = searchKeywordAdapter
+        }
+        searchingView.popularRecycler.setOnTouchListener { _, _ ->
+            inputManager.hideSoftInputFromWindow(searchingView.windowToken, 0)
         }
 
         val recentKeywordAdapter = RecentKeywordRecyclerAdapter(recentKeywordList, this)

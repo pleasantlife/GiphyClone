@@ -17,5 +17,6 @@
     <string name="relatedSearch">Related searches</string>
     <string name="popularSearch">Popular searches</string>
     <string name="backButtonDescription">Back button</string>
+    <string name="emptyFavorite">No Favorites Yet</string>
     <string name="checkConnection">Please check the connection status</string>
 </resources>

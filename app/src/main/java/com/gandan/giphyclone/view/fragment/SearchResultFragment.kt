@@ -148,6 +148,7 @@ class SearchResultFragment : Fragment(), GifItemClickListener, SearchKeywordItem
         searchResultView.backBtnImg.setOnClickListener {
             Navigation.findNavController(searchResultView).navigateUp()
         }
+        searchResultView.backBtnImg.setColorFilter(ContextCompat.getColor(context!!, R.color.blue))
         searchResultView.keywordText.setOnClickListener {
             moveToSearchPage()
         }

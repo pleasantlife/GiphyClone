@@ -1,11 +1,13 @@
 package com.gandan.giphyclone.view.fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,22 +44,7 @@ class FavoriteFragment : Fragment(), GifItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         favoriteView = inflater.inflate(R.layout.favorite_fragment, container, false)
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        val requestManager = Glide.with(this)
-        resultDataAdapter = ResultDataAdapter(
-            requestManager,
-            this,
-            resources.displayMetrics.density.toInt()
-        )
-        favoriteView.favoriteRecycler.apply {
-            layoutManager = staggeredGridLayoutManager
-            adapter = resultDataAdapter
-        }
-        favoriteView.searchBtn.setOnClickListener {
-            val beforePage = "favorite"
-            val bundle = bundleOf("beforePage" to beforePage)
-            Navigation.findNavController(favoriteView).navigate(R.id.action_favoriteFragment_to_searchFragment, bundle)
-        }
+        bindUI()
         return favoriteView
     }
 
@@ -78,10 +65,10 @@ class FavoriteFragment : Fragment(), GifItemClickListener {
             )
         ).get(
             FavoriteViewModel::class.java)
-        // TODO: Use the ViewModel
         viewModel.favoriteDataList.observe(viewLifecycleOwner, Observer {
             resultDataAdapter.submitList(it)
         })
+
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
             if(it == NetworkState.ERROR && idList.size > 0){
                 favoriteView.errorText.visibility = View.VISIBLE
@@ -89,6 +76,36 @@ class FavoriteFragment : Fragment(), GifItemClickListener {
                 favoriteView.errorText.visibility = View.GONE
             }
         })
+        checkEmpty()
+    }
+
+    private fun checkEmpty(){
+        if(idList.size > 0){
+                favoriteView.emptyConstraint.visibility = View.GONE
+            } else {
+                favoriteView.emptyConstraint.visibility = View.VISIBLE
+                favoriteView.emptyFavoriteImg.setColorFilter(Color.RED)
+            }
+    }
+
+    private fun bindUI(){
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        val requestManager = Glide.with(this)
+        resultDataAdapter = ResultDataAdapter(
+            requestManager,
+            this,
+            resources.displayMetrics.density.toInt()
+        )
+        favoriteView.favoriteRecycler.apply {
+            layoutManager = staggeredGridLayoutManager
+            adapter = resultDataAdapter
+        }
+        favoriteView.searchBtn.setOnClickListener {
+            val beforePage = "favorite"
+            val bundle = bundleOf("beforePage" to beforePage)
+            Navigation.findNavController(favoriteView).navigate(R.id.action_favoriteFragment_to_searchFragment, bundle)
+        }
+        favoriteView.searchBtn.setColorFilter(ContextCompat.getColor(context!!, R.color.red))
     }
 
     override fun movePage(type: String, id: String, position: Int) {
