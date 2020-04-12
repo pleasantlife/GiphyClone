@@ -14,7 +14,7 @@
 
 2. 실행방법
 - 안드로이드 스튜디오가 있다면 해당 프로젝트 클론 후 실행
-- 안드로이드 스튜디오가 없을 경우 app/build/outputs/apk/debug/app-debug.apk 파일 다운로드 후 실행
+- 안드로이드 스튜디오가 없을 경우 https://github.com/pleasantlife/GiphyClone/blob/master/giphyclone_demo_debug.apk 파일 다운로드 후 실행
 
 ## 4. 구현한 페이지
 - 인기있는 GIF들을 리스트 형태로 보여주는 페이지(복제 프로젝트 앱의 메인 페이지)
